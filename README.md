@@ -10,3 +10,15 @@ npm install
 npm run start
 ```
 
+### Run MySQL
+```
+npm run mysql:start
+```
+> 如果遇到 no matching manifest for linux/arm64/v8 in the manifest list entries 這個錯誤  
+> 編輯docker-compose.yml 
+> - #platform: linux/amd64 -> platform: linux/amd64
+
+### Stop MySQL
+```
+npm run mysql:stop
+```
