@@ -11,7 +11,7 @@
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 09/11/2021 21:05:46
+ Date: 10/11/2021 00:15:09
 */
 
 SET NAMES utf8mb4;
@@ -23,7 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `CreditCard`;
 CREATE TABLE `CreditCard`  (
   `MemberID` int(0) NOT NULL,
-  `CreditCardNumber` varchar(19) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `CreditCardNumber` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `ExpireYear` int(0) NOT NULL,
   `ExpireMonth` int(0) NOT NULL,
   `SecurityCode` int(0) NOT NULL,
@@ -61,12 +61,13 @@ CREATE TABLE `Payment`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `Product`;
 CREATE TABLE `Product`  (
-  `ProductID` int(0) NOT NULL,
+  `ProductID` int(0) NOT NULL AUTO_INCREMENT,
   `Price` int(0) NOT NULL,
   `Thumbnail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `Introduce` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
-  `Sales` int(0) NULL DEFAULT 0,
+  `Sales` int(0) NOT NULL DEFAULT 0,
   `Type` int(0) NOT NULL,
+  `Stock` int(0) NOT NULL,
   PRIMARY KEY (`ProductID`) USING BTREE,
   INDEX `Type`(`Type`) USING BTREE,
   CONSTRAINT `product_ibfk_1` FOREIGN KEY (`Type`) REFERENCES `Type` (`TypeID`) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -93,7 +94,7 @@ DROP TABLE IF EXISTS `TransactionList`;
 CREATE TABLE `TransactionList`  (
   `TransactionID` int(0) NOT NULL,
   `ProductID` int(0) NOT NULL,
-  `Quantity` tinyint(0) NOT NULL,
+  `Quantity` int(0) NOT NULL,
   `Price` int(0) NOT NULL,
   INDEX `TransactionID`(`TransactionID`) USING BTREE,
   INDEX `ProductID`(`ProductID`) USING BTREE,
@@ -109,8 +110,8 @@ CREATE TABLE `TransactionRecord`  (
   `TransactionID` int(0) NOT NULL,
   `MemberID` int(0) NOT NULL,
   `Date` datetime(0) NOT NULL ON UPDATE CURRENT_TIMESTAMP(0),
-  `Total` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `OrderStatus` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `Total` int(0) NOT NULL,
+  `OrderStatus` int(0) NOT NULL,
   `PaymentMethod` int(0) NOT NULL,
   PRIMARY KEY (`TransactionID`) USING BTREE,
   INDEX `MemberID`(`MemberID`) USING BTREE,
