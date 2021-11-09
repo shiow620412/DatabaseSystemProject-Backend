@@ -29,5 +29,5 @@ Windows: initMySQL.bat
 Ubuntu: initMySQL.sh
 Mac OS: initMySQL.sh
 ```
-> 如果出現 permission denied 
+> 如果出現 permission denied  
 > 開啟Terminal輸入:sudo chmod 755 initMySQL.*
