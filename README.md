@@ -22,3 +22,12 @@ npm run mysql:start
 ```
 npm run mysql:stop
 ```
+
+### Recreate MySQL
+```
+Windows: initMySQL.bat
+Ubuntu: initMySQL.sh
+Mac OS: initMySQL.sh
+```
+> 如果出現 permission denied 
+> 開啟Terminal輸入:sudo chmod 755 initMySQL.*
