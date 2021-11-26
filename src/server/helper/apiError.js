@@ -51,7 +51,7 @@ class MySQLError extends ExtendableError {
 }
 
 /**
- * 信箱尚未註冊 Error
+ * Login Error
  * @extends ExtendableError
  */
 class LoginError extends ExtendableError {

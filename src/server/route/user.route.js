@@ -1,6 +1,6 @@
 import userController from "../controller/user.controller.js";
 import express from "express";
-import middlewareService from "../middlewareService.js";
+import middlewareService from "../service/middleware.service.js";
 const router = express.Router();
 
 /* GET users listing. */
