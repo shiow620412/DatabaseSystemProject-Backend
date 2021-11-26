@@ -2,7 +2,7 @@ import express from "express";
 import order from "./order.route.js"
 import product from "./product.route.js"
 import user from "./user.route.js"
-var router = express.Router();
+const router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
