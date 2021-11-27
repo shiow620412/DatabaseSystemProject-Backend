@@ -21,7 +21,11 @@ const Login = (values) => {
         } else {
           connection.query( // User撈取所有欄位的值組
             'SELECT * FROM Member WHERE Account = ?',
+<<<<<<< HEAD
             [values.account], (error, result) => {
+=======
+            values.account, (error, result) => {
+>>>>>>> main
                 if (error) {
                     reject(new apiError.MySQLError()); 
                 } else if (Object.keys(result).length === 0) {
@@ -53,6 +57,7 @@ const Login = (values) => {
       });
     });
   };
+<<<<<<< HEAD
 
 
 
@@ -117,3 +122,8 @@ export default {
     selectUser,
     findBackPassword
 };
+=======
+export default {
+    Login
+};
+>>>>>>> main

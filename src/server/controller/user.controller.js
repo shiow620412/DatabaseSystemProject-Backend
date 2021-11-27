@@ -9,6 +9,7 @@ const userLogin = (req, res, next) => {
   };
   
 
+<<<<<<< HEAD
 const getUser = (req, res, next) => {
   // console.log(typeof req.query["page"])
   userModule.selectUser(req.user,req.query["page"]).then((result) => {
@@ -28,4 +29,9 @@ export default
     userLogin,
     getUser,
     findPassword
+=======
+
+export default {
+    userLogin
+>>>>>>> main
 }
