@@ -53,6 +53,50 @@ const Login = (values) => {
       });
     });
   };
+
+const Resgister = (values) => {
+    return new Promise((resolve, reject) => {
+      connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+        if (connectionError) {
+            
+            reject(connectionError); // 若連線有問題回傳錯誤
+        } else {
+            const memberEmail = values.email;
+            const memberName = values.name;
+            const memberAccount = values.account;
+            const memberPassword = values.password;
+            
+            connection.query( // User新增帳號資料 
+                'SELECT * FROM Member WHERE Account = ? AND Email = ?',
+                [memberAccount, memberEmail], (error, result) => {
+                    if (error) {
+                        reject(new apiError.MySQLError()); 
+                    } else if (Object.keys(result).length === 0) {
+                        connection.query(
+                            'INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `IsAdmin`) VALUES (?, ?, ?, ?, ?)',
+                            [memberEmail, memberName, memberAccount, memberPassword, 0], (error, result) => {
+                                if (error) {
+                                    reject(new apiError.MySQLError()); 
+                                } else if (Object.keys(result).length === 0) {
+                                    reject(new apiError.LoginError()); 
+                                } else {
+                                    resolve({ 
+                                        code: 200,
+                                        message: '註冊成功', 
+                                    });  
+                                }
+                            });
+                    } else {
+                        reject(new apiError.LoginError());
+                    }
+                    connection.release();
+                });
+        }
+      });
+    });
+  };
+
 export default {
-    Login
+    Login,
+    Resgister
 };

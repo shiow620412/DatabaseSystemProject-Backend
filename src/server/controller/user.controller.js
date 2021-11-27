@@ -7,9 +7,16 @@ const userLogin = (req, res, next) => {
       res.send(result); // 成功回傳result結果
     }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
   };
-  
 
+/* User  POST 註冊(Resgister) */
+const userResgister = (req, res, next) => {
+  // 新增會員帳號
+  userModule.Resgister(req.body).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
 
 export default {
-    userLogin
+    userLogin,
+    userResgister
 }

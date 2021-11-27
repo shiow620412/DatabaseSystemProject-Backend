@@ -7,9 +7,9 @@ const router = express.Router();
 router.get('/', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
 });
-router.post('/register', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+
+router.post('/register', userController.userResgister);
+    
 router.post('/login', userController.userLogin ); 
 
 router.get('/findPassword', function(req, res, next) {
