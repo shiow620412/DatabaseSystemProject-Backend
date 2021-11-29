@@ -3,7 +3,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan"
 import indexRouter from "../server/route/index.route.js"
-import middlewareService from "../server/service/middleware.service.js";
+import middlewareService from "../server/helper/middleware.js";
 import cors from "cors"
 
 const app = express();

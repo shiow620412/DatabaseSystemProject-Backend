@@ -8,9 +8,10 @@ function APIError(message, error){
         stack: error.stack
     }
 }
-function MySQLError(message, error){
+function MySQLError(error){
     return {
-        message,
+        message: error.message,
+        sql: error.sql,
         status: httpStatus.INTERNAL_SERVER_ERROR,
         isPublic: true,
         code: 500,

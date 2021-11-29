@@ -13,7 +13,7 @@ function query(queryString, queryParameter){
     return new Promise( (resolve, reject) => {
         connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
             if (connectionError) {                
-                reject(connectionError); 
+                reject(error.MySQLError(connectionError)); 
             } else {
 
                 connection.query( 
@@ -21,7 +21,7 @@ function query(queryString, queryParameter){
                     Array.isArray(queryParameter) ? queryParameter : [queryParameter], 
                     (_error, result) => {
                         if (_error) {
-                            reject(error.MySQLError("Backend Error"),new Error()); 
+                            reject(error.MySQLError(_error)); 
                         } else {
                             resolve(result);
                         }
