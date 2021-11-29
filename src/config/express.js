@@ -16,5 +16,5 @@ app.use(cors());
 app.use(express.static(path.join(path.resolve(), 'public')));
 app.use('/api', indexRouter);
 app.use(middlewareService.outputError);
-
+//test
 export default app;
