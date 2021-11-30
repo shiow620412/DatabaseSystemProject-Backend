@@ -37,66 +37,56 @@ const Login = (values) => {
             }
         }).catch((error) => {reject(error);})
     })
-   
-  };
+};
 
 /*  User Select   */
 const selectUser = (user,page) => {
-    return new Promise((resolve, reject) => {
-        console.log(user);
-      connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
-        if (connectionError) {
-          reject(connectionError); // 若連線有問題回傳錯誤
-        } else {
-          let minLimit=(Number(page)-1)*50  
-          let maxLimit=(Number(page))*50  
-          connection.query( // User撈取所有欄位的值組
-            'SELECT * FROM Member  LIMIT ?,?' ,
-            [minLimit,maxLimit],
-            (error, result) => {
-              if (error) {
-                console.error('SQL error: ', error);
-                reject(error); // 寫入資料庫有問題時回傳錯誤
-              } else {
-                resolve(result); // 撈取成功回傳 JSON 資料
-              }
-              connection.release();
-            }
-          );
-        }
-      });
-    });
-  };
-  
+    return new Promise((resolve,reject) => {
+        let minLimit=(Number(page)-1)*50  
+        let maxLimit=(Number(page))*50  
+        query('SELECT * FROM Member  LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
+            
+            resolve(result); 
+        });
+    })
+        
+};
+
   /*  User findBackPassword   */
-  const findBackPassword = (user,page) => {
-    return new Promise((resolve, reject) => {
-        console.log(user);
-      connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
-        if (connectionError) {
-          reject(connectionError); // 若連線有問題回傳錯誤
-        } else {
-          
-          connection.query( // User撈取所有欄位的值組
-            'SELECT * FROM Member  LIMIT ?,?' ,
-            [minLimit,maxLimit],
-            (error, result) => {
-              if (error) {
-                console.error('SQL error: ', error);
-                reject(error); // 寫入資料庫有問題時回傳錯誤
-              } else {
-                resolve(result); // 撈取成功回傳 JSON 資料
-              }
-              connection.release();
+const findBackPassword = (value) => {
+    return new Promise((resolve,reject) => {
+        query('SELECT Password FROM Member  WHERE Email = ?',value.Email ).then((result) => {            
+            resolve(result); 
+        }).catch((error) => {reject(error);})
+    })
+};
+
+
+
+const Register = (values) => {
+    return new Promise((resolve,reject) => {
+        query("SELECT * FROM Member WHERE Account = ? AND Email = ?", [values.account,values.email]).then((result) => {
+            if (Object.keys(result).length === 0) {
+                query(
+                    'INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `IsAdmin`) VALUES (?, ?, ?, ?, ?)',
+                    [values.email, values.name, values.account, values.password, 0], (result) => {
+                        console.log("123");
+                        resolve({ 
+                            code: 200,
+                            message: '註冊成功', 
+                        });  
+                    });
+            } else {
+                reject(error.APIError("註冊失敗", new Error())); 
             }
-          );
-        }
-      });
+        }).catch((error) => {reject(error);})
     });
-  };
-  export default {
-      Login,
-      selectUser,
-      findBackPassword 
-  };
-  
+};
+
+
+export default {
+    Login,
+    selectUser,
+    findBackPassword ,
+    Register
+};
