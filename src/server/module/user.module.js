@@ -29,7 +29,7 @@ const Login = (values) => {
                 const token = jwt.sign({ payload, exp: Math.floor(Date.now() / 1000) + (86400 * 365) }, config.secretKey);
                 resolve({ 
                     code: 200,
-                    message: '登入成功', 
+                    message: '登入成功',
                     token 
                 }); 
             } else {
