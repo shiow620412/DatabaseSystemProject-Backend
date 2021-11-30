@@ -1,20 +1,18 @@
 import userController from "../controller/user.controller.js";
 import express from "express";
+import middlewareService from "../helper/middleware.js"
 
 
 const router = express.Router();
 
 /* GET users listing. */
 
-router.get('/', middlewareService.verifyToken, userController.getUser ); 
-router.post('/register', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+router.get('/',middlewareService.verifyToken, userController.getUser ); 
+router.post('/register', userController.userRegister);
 router.post('/login', userController.userLogin ); 
-// router.post('/findPassword', userController.findPassword ); 
-router.get('/findPassword', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+
+router.get('/findPassword', userController.findPassword ); 
+
 
 router.post('/buy', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
