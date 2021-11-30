@@ -45,7 +45,6 @@ const selectUser = (user,page) => {
         let minLimit=(Number(page)-1)*50  
         let maxLimit=(Number(page))*50  
         query('SELECT * FROM Member  LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
-            
             resolve(result); 
         });
     })
@@ -69,7 +68,7 @@ const Register = (values) => {
             if (Object.keys(result).length === 0) {
                 query(
                     'INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `IsAdmin`) VALUES (?, ?, ?, ?, ?)',
-                    [values.email, values.name, values.account, values.password, 0], (result) => {
+                    [values.email, values.name, values.account, values.password, 0]).then((result) => {
                         console.log("123");
                         resolve({ 
                             code: 200,
