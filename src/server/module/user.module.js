@@ -39,6 +39,64 @@ const Login = (values) => {
     })
    
   };
-export default {
-    Login
-};
+
+/*  User Select   */
+const selectUser = (user,page) => {
+    return new Promise((resolve, reject) => {
+        console.log(user);
+      connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+        if (connectionError) {
+          reject(connectionError); // 若連線有問題回傳錯誤
+        } else {
+          let minLimit=(Number(page)-1)*50  
+          let maxLimit=(Number(page))*50  
+          connection.query( // User撈取所有欄位的值組
+            'SELECT * FROM Member  LIMIT ?,?' ,
+            [minLimit,maxLimit],
+            (error, result) => {
+              if (error) {
+                console.error('SQL error: ', error);
+                reject(error); // 寫入資料庫有問題時回傳錯誤
+              } else {
+                resolve(result); // 撈取成功回傳 JSON 資料
+              }
+              connection.release();
+            }
+          );
+        }
+      });
+    });
+  };
+  
+  /*  User findBackPassword   */
+  const findBackPassword = (user,page) => {
+    return new Promise((resolve, reject) => {
+        console.log(user);
+      connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
+        if (connectionError) {
+          reject(connectionError); // 若連線有問題回傳錯誤
+        } else {
+          
+          connection.query( // User撈取所有欄位的值組
+            'SELECT * FROM Member  LIMIT ?,?' ,
+            [minLimit,maxLimit],
+            (error, result) => {
+              if (error) {
+                console.error('SQL error: ', error);
+                reject(error); // 寫入資料庫有問題時回傳錯誤
+              } else {
+                resolve(result); // 撈取成功回傳 JSON 資料
+              }
+              connection.release();
+            }
+          );
+        }
+      });
+    });
+  };
+  export default {
+      Login,
+      selectUser,
+      findBackPassword 
+  };
+  

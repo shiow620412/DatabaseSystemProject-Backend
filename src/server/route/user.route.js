@@ -5,14 +5,13 @@ import express from "express";
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+
+router.get('/', middlewareService.verifyToken, userController.getUser ); 
 router.post('/register', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
 });
 router.post('/login', userController.userLogin ); 
-
+// router.post('/findPassword', userController.findPassword ); 
 router.get('/findPassword', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
 });
