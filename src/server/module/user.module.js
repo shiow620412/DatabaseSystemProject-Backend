@@ -33,7 +33,7 @@ const Login = (values) => {
                     token 
                 }); 
             } else {
-                reject(error.APIError("輸入的密碼有誤",new Error())); 
+                reject(error.APIError("輸入的密碼有誤")); 
             }
         }).catch((error) => {reject(error);})
     })
