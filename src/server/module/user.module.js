@@ -41,7 +41,10 @@ const Login = (values) => {
 
 /*  User list   */
 const listUser = (user,page) => {
+    console.log(page)
     return new Promise((resolve,reject) => {
+        if(page===undefined)
+            page=1
         let minLimit=(Number(page)-1)*50  
         let maxLimit=(Number(page))*50  
         query('SELECT * FROM Member  LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
