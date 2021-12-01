@@ -1,10 +1,6 @@
 
 import JWT from "jsonwebtoken";
 import config from "../config/config.js";
-<<<<<<< HEAD
-import httpStatus from "http-status";
-=======
->>>>>>> main
 function middlewareService(){
     const service = {
         verifyToken,
@@ -20,10 +16,6 @@ function middlewareService(){
             req.token = bearerToken; // 在response中建立一個token參數
             JWT.verify(bearerToken, config.secretKey, (err,payload) => {
                 if(err){
-<<<<<<< HEAD
-                    
-=======
->>>>>>> main
                     res.status(401).send({ 
                             code: 401,
                             message: '金鑰驗證失敗！' 
@@ -45,8 +37,6 @@ function middlewareService(){
             }); // Header 查無 Bearer Token
         }
     };
-
-
 
     function outputError(err, req, res, next){
         res.status(err.status).json({

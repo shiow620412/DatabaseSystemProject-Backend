@@ -1,5 +1,7 @@
 import express from "express";
-var router = express.Router();
+import productController from "../controller/product.controller.js";
+import middlewareService from "../helper/middleware.js";
+const router = express.Router();
 
 //product
 // find all
@@ -11,9 +13,8 @@ router.get("/search",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
 });
 //insert
-router.post("/",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-});
+router.post('/',middlewareService.verifyToken,middlewareService.checkAdmin, productController.addProduct ); 
+
 router.delete("/:id",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
 });
