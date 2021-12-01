@@ -39,14 +39,14 @@ const Login = (values) => {
     })
 };
 
-/*  User Select   */
-const selectUser = (user,page) => {
+/*  User list   */
+const listUser = (user,page) => {
     return new Promise((resolve,reject) => {
         let minLimit=(Number(page)-1)*50  
         let maxLimit=(Number(page))*50  
         query('SELECT * FROM Member  LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
             resolve(result); 
-        });
+        }).catch((error) => {reject(error);})
     })
         
 };
@@ -64,7 +64,7 @@ const findBackPassword = (value) => {
 
 const Register = (values) => {
     return new Promise((resolve,reject) => {
-        query("SELECT * FROM Member WHERE Account = ? AND Email = ?", [values.account,values.email]).then((result) => {
+        query("SELECT * FROM Member WHERE Account = ? OR Email = ?", [values.account,values.email]).then((result) => {
             if (Object.keys(result).length === 0) {
                 query(
                     'INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `IsAdmin`) VALUES (?, ?, ?, ?, ?)',
@@ -85,7 +85,7 @@ const Register = (values) => {
 
 export default {
     Login,
-    selectUser,
+    listUser,
     findBackPassword ,
     Register
 };

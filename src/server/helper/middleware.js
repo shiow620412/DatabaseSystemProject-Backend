@@ -2,6 +2,8 @@
 import JWT from "jsonwebtoken";
 import config from "../../config/config.js";
 import httpStatus from "http-status";
+import checkAdminByUserID from "../database/member.database.js";
+import error from "./error.js";
 
 
 function verifyToken(req, res, next){
@@ -54,8 +56,23 @@ function outputError(err, req, res, next){
     
 }
 
+function checkAdmin(req, res, next){
+    checkAdminByUserID(req.user.id).then((result)=>{
+        if(result === 1){
+            next();
+        }else{
+            req.send({
+                code: 200,
+                message: "權限不足"
+            });
+        }
+    }).catch((_error) => {error.MySQLError(_error)});
+    
+}
+
 
 export default {
     verifyToken,
-    outputError
+    outputError,
+    checkAdmin
 };
