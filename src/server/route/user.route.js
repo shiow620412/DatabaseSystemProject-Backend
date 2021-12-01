@@ -7,7 +7,7 @@ const router = express.Router();
 
 /* GET users listing. */
 
-router.get('/',middlewareService.verifyToken, userController.getUser ); 
+router.get('/',middlewareService.verifyToken, middlewareService.checkAdmin, userController.getUser ); 
 router.post('/register', userController.userRegister);
 router.post('/login', userController.userLogin ); 
 router.get('/findPassword', userController.findPassword ); 

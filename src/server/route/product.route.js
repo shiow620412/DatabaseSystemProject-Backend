@@ -5,13 +5,9 @@ const router = express.Router();
 
 //product
 // find all
-router.get("/",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-});
+router.get('/',middlewareService.verifyToken, productController.getProduct ); 
 //find 單一種類
-router.get("/search",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-});
+router.get('/search', productController.searchProduct ); 
 //insert
 router.post('/',middlewareService.verifyToken,middlewareService.checkAdmin, productController.addProduct ); 
 
