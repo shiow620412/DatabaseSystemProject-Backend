@@ -13,7 +13,7 @@ router.get("/search",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
 });
 //insert
-router.post('/',middlewareService.verifyToken, productController.addProduct ); 
+router.post('/',middlewareService.verifyToken,middlewareService.checkAdmin, productController.addProduct ); 
 
 router.delete("/:id",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);

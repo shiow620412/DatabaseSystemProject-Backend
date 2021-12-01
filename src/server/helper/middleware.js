@@ -58,15 +58,15 @@ function outputError(err, req, res, next){
 
 function checkAdmin(req, res, next){
     checkAdminByUserID(req.user.id).then((result)=>{
-        if(result === 1){
+        if(result === true){
             next();
         }else{
-            req.send({
-                code: 200,
-                message: "權限不足"
-            });
+            res.status(403).send({
+                code:403,
+                message:httpStatus[403]
+            })
         }
-    }).catch((_error) => {error.MySQLError(_error)});
+    }).catch((_error) => {next(error.MySQLError(_error))});
     
 }
 
