@@ -1,8 +1,16 @@
 import error from '../helper/error.js';
 import query from '../database/basic.database.js';
 
-
-const insertProduct = (product) => {
+/**
+ * @param  {object} product
+ * @param  {string} product.name
+ * @param  {string} product.price
+ * @param  {string} product.thumbnail
+ * @param  {string} product.describe
+ * @param  {string} product.type
+ * @param  {string} product.stock
+ */
+const addProduct = (product) => {
     return new Promise((resolve,reject) => {
         query('INSERT INTO `Product`(`ProductName`, `Price`, `Thumbnail`, `Introduce`, `Sales` ,`Type` , `Stock`) VALUES (?, ?, ?, ?, ?, ?, ?)',
         [product.name, product.price, product.thumbnail, product.describe, 0, product.type, product.stock]).then((result) => {
@@ -15,7 +23,10 @@ const insertProduct = (product) => {
 };
 
 /*  Product list   */
-const listProduct = (page) => {
+/**
+ * @param  {string} page
+ */
+const getProducts = (page) => {
     return new Promise((resolve,reject) => {
         if(page===undefined)
             page=1
@@ -27,10 +38,12 @@ const listProduct = (page) => {
     })
         
 };
-
+/**
+ * @param  {string} productName
+ */
 const searchProductByName = (productName) => {
     return new Promise((resolve,reject) => {
-        query('SELECT * FROM Product  WHERE ProductName = ?', [productName]).then((result) => {
+        query('SELECT * FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ?', [`%${productName}%`]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);})
     })
@@ -40,7 +53,7 @@ const searchProductByName = (productName) => {
 
 export default 
 {
-    insertProduct,
-    listProduct,
+    addProduct,
+    getProducts,
     searchProductByName
 }
