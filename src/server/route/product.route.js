@@ -5,7 +5,7 @@ const router = express.Router();
 
 //product
 // find all
-router.get('/',middlewareService.verifyToken, productController.getProduct ); 
+router.get('/', productController.getProducts ); 
 //find 單一種類
 router.get('/search', productController.searchProduct ); 
 //insert

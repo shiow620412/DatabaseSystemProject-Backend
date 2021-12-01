@@ -13,6 +13,11 @@ const connectionPool = mysql.createPool({
 });
 
 /*  User GET (Login)登入取得資訊  */
+/**
+ * @param  {object} values
+ * @param  {string} values.account
+ * @param  {string} values.password
+ */
 const Login = (values) => {
     return new Promise((resolve,reject) => {
         query("SELECT * FROM Member WHERE Account = ?", values.account).then((result) => {
@@ -40,6 +45,10 @@ const Login = (values) => {
 };
 
 /*  User list   */
+/**
+ * @param  {object} user
+ * @param  {string} page
+ */
 const listUser = (user,page) => {
     console.log(page)
     return new Promise((resolve,reject) => {
@@ -55,6 +64,10 @@ const listUser = (user,page) => {
 };
 
   /*  User findBackPassword   */
+/**
+ * @param  {object} value
+ * @param  {string} value.Email
+ */
 const findBackPassword = (value) => {
     return new Promise((resolve,reject) => {
         query('SELECT Password FROM Member  WHERE Email = ?',value.Email ).then((result) => {            
@@ -64,7 +77,13 @@ const findBackPassword = (value) => {
 };
 
 
-
+/**
+ * @param  {object} values
+ * @param  {string} values.email
+ * @param  {string} values.name
+ * @param  {string} values.account
+ * @param  {string} values.password
+ */
 const Register = (values) => {
     return new Promise((resolve,reject) => {
         query("SELECT * FROM Member WHERE Account = ? OR Email = ?", [values.account,values.email]).then((result) => {
