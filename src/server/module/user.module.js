@@ -91,7 +91,6 @@ const Register = (values) => {
                 query(
                     'INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `IsAdmin`) VALUES (?, ?, ?, ?, ?)',
                     [values.email, values.name, values.account, values.password, 0]).then((result) => {
-                        console.log("123");
                         resolve({ 
                             code: 200,
                             message: '註冊成功', 
