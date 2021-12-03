@@ -95,6 +95,10 @@ const Register = (values) => {
     });
 };
 
+const buyProudct = (values) => {
+    
+}
+
 export default {
     Login,
     listUser,
