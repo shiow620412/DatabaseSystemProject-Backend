@@ -1,19 +1,19 @@
-import error from '../helper/error.js';
 import query from '../database/basic.database.js';
 
+/** Admin hit the product on the shelf */
 /**
  * @param  {object} product
  * @param  {string} product.name
  * @param  {string} product.price
  * @param  {string} product.thumbnail
- * @param  {string} product.describe
+ * @param  {string} product.description
  * @param  {string} product.type
  * @param  {string} product.stock
  */
 const addProduct = (product) => {
     return new Promise((resolve,reject) => {
-        query('INSERT INTO `Product`(`ProductName`, `Price`, `Thumbnail`, `Introduce`, `Sales` ,`Type` , `Stock`) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [product.name, product.price, product.thumbnail, product.describe, 0, product.type, product.stock]).then((result) => {
+        query('INSERT INTO `Product`(`ProductName`, `Price`, `Thumbnail`, `Description`, `Sales` , `Type`, `Stock`, `OnShelf`) VALUES (?, ?, ?, ?, ?, ?, ?, ? )',
+        [product.name, product.price, product.thumbnail, product.description, 0, product.type, product.stock, "Yes"]).then((result) => {
             resolve({
                 code: 200,
                 message: "商品上架成功",
@@ -22,7 +22,7 @@ const addProduct = (product) => {
     });
 };
 
-/*  Product list   */
+/** List the products on page  */
 /**
  * @param  {string} page
  */
@@ -35,9 +35,10 @@ const getProducts = (page) => {
         query('SELECT * FROM Product  LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);})
-    })
-        
+    }) 
 };
+
+/** Search the products by name*/
 /**
  * @param  {string} productName
  */
@@ -46,10 +47,8 @@ const searchProductByName = (productName) => {
         query('SELECT * FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ?', [`%${productName}%`]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);})
-    })
-        
+    })    
 };
-
 
 export default 
 {

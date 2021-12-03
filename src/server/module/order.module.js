@@ -1,7 +1,6 @@
-import error from '../helper/error.js';
 import query from '../database/basic.database.js';
 
-/*  Order list   */
+/** List the orders on page  */
 /**
  * @param  {string} page
  */
@@ -11,7 +10,7 @@ const getOrderlist = (page) => {
             page=1
         let minLimit=(Number(page)-1)*50  
         let maxLimit=(Number(page))*50  
-        query('SELECT * FROM TransactionRecord LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
+        query('SELECT * FROM `Order` LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);})
     })

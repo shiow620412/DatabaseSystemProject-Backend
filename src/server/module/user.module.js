@@ -1,4 +1,3 @@
-
 import mysql from 'mysql8';
 import config from '../../config/config.js';
 import jwt from 'jsonwebtoken';
@@ -12,7 +11,7 @@ const connectionPool = mysql.createPool({
   database: config.mysqlDatabase
 });
 
-/*  User GET (Login)登入取得資訊  */
+/** User Login */
 /**
  * @param  {object} values
  * @param  {string} values.account
@@ -44,7 +43,7 @@ const Login = (values) => {
     })
 };
 
-/*  User list   */
+/** List all users on page */
 /**
  * @param  {object} user
  * @param  {string} page
@@ -63,7 +62,7 @@ const listUser = (user,page) => {
         
 };
 
-  /*  User findBackPassword   */
+/** User findBackPassword */
 /**
  * @param  {object} value
  * @param  {string} value.Email
@@ -76,7 +75,7 @@ const findBackPassword = (value) => {
     })
 };
 
-
+/** User Register */
 /**
  * @param  {object} values
  * @param  {string} values.email
@@ -102,7 +101,6 @@ const Register = (values) => {
         }).catch((error) => {reject(error);})
     });
 };
-
 
 export default {
     Login,
