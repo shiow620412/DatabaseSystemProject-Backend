@@ -1,3 +1,3 @@
 docker-compose down
-rmdir /s  "./MySQL"
+rmdir /s /q "./MySQL"
 docker-compose up -d

@@ -1,4 +1,3 @@
-import mysql from 'mysql8';
 import config from '../../config/config.js';
 import jwt from 'jsonwebtoken';
 import error from '../helper/error.js';
@@ -54,7 +53,7 @@ const listUser = (user,page) => {
     })    
 };
 
-  /*  User findBackPassword   */
+/*  User findBackPassword   */
 /**
  * @param  {object} value
  * @param  {string} value.Email

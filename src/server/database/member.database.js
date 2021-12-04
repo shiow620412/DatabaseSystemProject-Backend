@@ -14,7 +14,6 @@ function checkAdminByUserID(userID){
                 else
                     resolve(false)
             }
-           
         }).catch((error) => {reject(error);}) 
     })
 }
