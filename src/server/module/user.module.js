@@ -48,7 +48,7 @@ const Login = (values) => {
  * @param  {object} user
  * @param  {string} page
  */
-const listUser = (user,page) => {
+const listUser = (page) => {
     console.log(page)
     return new Promise((resolve,reject) => {
         if(page===undefined)
