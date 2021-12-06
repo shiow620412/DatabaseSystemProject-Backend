@@ -8,13 +8,9 @@ const router = express.Router();
 router.get('/', middlewareService.verifyToken,orderController.getOrder); 
 
 //insert
-router.post("/",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-}); 
+router.post("/",middlewareService.verifyToken,middlewareService.checkAdmin, orderController.addOrder); 
 
 // find by user id 
-router.get("/:account",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-});
+router.get("/:account",orderController.searchOrder);
 
 export default router;
