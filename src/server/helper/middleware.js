@@ -36,8 +36,6 @@ function verifyToken(req, res, next){
     }
 };
 
-
-
 function outputError(err, req, res, next){
     if (err.sql){
         res.status(err.status).json({
@@ -47,11 +45,16 @@ function outputError(err, req, res, next){
             stack: config.env === 'development' ? err.stack : {}
         });
     }else{
-        res.status(err.status).json({
-            message: err.isPublic ? err.message : httpStatus[err.status],
-            code: err.code ? err.code : httpStatus[err.status],
-            stack: config.env === 'development' ? err.stack : {}
-        });
+        res.status(500).json({
+            message: error.message,
+            code: 500,
+            stack: err.stack
+        })
+        // res.status(err.status).json({
+        //     message: err.isPublic ? err.message : httpStatus[err.status],
+        //     code: err.code ? err.code : httpStatus[err.status],
+        //     stack: config.env === 'development' ? err.stack : {}
+        // });
     }
     
 }
@@ -73,5 +76,5 @@ function checkAdmin(req, res, next){
 export default {
     verifyToken,
     outputError,
-    checkAdmin
+    checkAdmin,
 };
