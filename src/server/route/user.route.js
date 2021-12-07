@@ -47,14 +47,6 @@ router.delete('/creditcard', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
 });
 
-
-export default router;
-
-
-
-
-
-
 router.post('/shoppingCart', middlewareService.verifyToken, userController.userShoppingCart);
 
 export default router;
