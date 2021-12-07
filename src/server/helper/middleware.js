@@ -47,11 +47,20 @@ function outputError(err, req, res, next){
             stack: config.env === 'development' ? err.stack : {}
         });
     }else{
-        res.status(err.status).json({
-            message: err.isPublic ? err.message : httpStatus[err.status],
-            code: err.code ? err.code : httpStatus[err.status],
-            stack: config.env === 'development' ? err.stack : {}
-        });
+        if(err.status){
+            res.status(err.status).json({
+                message: err.isPublic ? err.message : httpStatus[err.status],
+                code: err.code ? err.code : httpStatus[err.status],
+                stack: config.env === 'development' ? err.stack : {}
+            });
+        }else{
+            res.status(500).json({
+                message: err.message,
+                code: 500,
+                stack: config.env === 'development' ? err.stack : {}
+            })
+        }
+       
     }
     
 }
