@@ -45,7 +45,6 @@ const Login = (values) => {
 
 /** List all users on page */
 /**
- * @param  {object} user
  * @param  {string} page
  */
 const listUser = (page) => {

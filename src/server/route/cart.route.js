@@ -1,5 +1,5 @@
 import express from "express";
-
+const router = express.Router();
 
 //delete
 router.delete("/",(req,res,next)=>{

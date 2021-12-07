@@ -1,25 +1,24 @@
 import query from '../database/basic.database.js';
 
-/** List the orders on page  */
+
+
+/** Search the orers by memberID*/
 /**
- * @param  {string} page
+ * @param  {object} user
  */
-const getOrderlist = (page) => {
+ const searchOrderByID = (user) => {
+     console.log(user)
     return new Promise((resolve,reject) => {
-        if(page===undefined)
-            page=1
-        let minLimit=(Number(page)-1)*50  
-        let maxLimit=(Number(page))*50  
-        query('SELECT * FROM `Order` LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
+        query('SELECT * FROM `Order` WHERE MemberID = ?', [user.id]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);})
-    })
-        
+    })    
 };
+
 
 
 
 export default 
 {
-    getOrderlist,
+    searchOrderByID
 }
