@@ -17,4 +17,14 @@ router.get("/:account",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
 });
 
+
+// 取消訂單
+router.delete("/:id",(req,res,next)=>{
+    res.send(req.method+" "+req.originalUrl);
+});
+
+// 查詢訂單詳細資料
+router.get("/:id/detail",(req,res,next)=>{
+    res.send(req.method+" "+req.originalUrl);
+});
 export default router;
