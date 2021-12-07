@@ -11,10 +11,10 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.use("/order",order);
-router.use("/product",product);
-router.use("/user",user);
-router.use("/cart",cart);
-router.use("/admin",admin);
+router.use("/orders",order);
+router.use("/products",product);
+router.use("/users",user);
+router.use("/carts",cart);
+router.use("/admins",admin);
 
 export default router;

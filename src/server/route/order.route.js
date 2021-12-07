@@ -4,18 +4,8 @@ import middlewareService from "../helper/middleware.js";
 
 const router = express.Router();
 
-//find all
-router.get('/', middlewareService.verifyToken,orderController.getOrder); 
-
-//insert
-router.post("/",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-}); 
-
 // find by user id 
-router.get("/:account",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-});
+router.get("/",middlewareService.verifyToken,orderController.searchOrder);
 
 
 // 取消訂單

@@ -1,6 +1,7 @@
 import express from "express";
-//modify orders
-router.post("/order/:id",(req,res,next)=>{
+const router = express.Router();
+//停/復權用戶
+router.post("/users/:id/banstatus",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
 }); 
 

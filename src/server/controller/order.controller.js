@@ -6,7 +6,17 @@ const getOrder = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+const searchOrder = (req, res, next) => {
+  orderModule.searchOrderByID(req.user).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
+
+
+
 export default 
 {
   getOrder,
+  searchOrder
 }

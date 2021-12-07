@@ -37,7 +37,6 @@ const Login = (values) => {
 
 /*  User list   */
 /**
- * @param  {object} user
  * @param  {string} page
  */
 const listUser = (page) => {
