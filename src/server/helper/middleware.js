@@ -36,8 +36,6 @@ function verifyToken(req, res, next){
     }
 };
 
-
-
 function outputError(err, req, res, next){
     if (err.sql){
         res.status(err.status).json({
@@ -79,9 +77,8 @@ function checkAdmin(req, res, next){
     
 }
 
-
 export default {
     verifyToken,
     outputError,
-    checkAdmin
+    checkAdmin,
 };

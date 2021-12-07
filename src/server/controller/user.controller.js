@@ -29,10 +29,26 @@ const userRegister = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+const userBuyProduct = (req, res, next) => {
+  // 會員結帳
+  userModule.buyProduct(req.user, req.body).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
+const userShoppingCart = (req, res, next) => {
+  // 放入購物車
+  userModule.shoppingCart(req.user, req.body).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
 export default 
 {
   userLogin,
   getUser,
   findPassword,
-  userRegister
+  userRegister,
+  userBuyProduct,
+  userShoppingCart
 }

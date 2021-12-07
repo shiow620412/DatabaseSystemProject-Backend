@@ -6,10 +6,7 @@ const getOrder = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
-
-
 export default 
 {
   getOrder,
-
 }
