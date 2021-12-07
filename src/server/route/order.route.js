@@ -11,6 +11,6 @@ router.get('/', middlewareService.verifyToken,orderController.getOrder);
 router.post("/",middlewareService.verifyToken,middlewareService.checkAdmin, orderController.addOrder); 
 
 // find by user id 
-router.get("/:account",orderController.searchOrder);
+router.get("/:account",middlewareService.verifyToken,orderController.searchOrder);
 
 export default router;

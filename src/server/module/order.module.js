@@ -44,7 +44,7 @@ const getOrderlist = (page) => {
  */
 const searchOrderByID = (memberID) => {
     return new Promise((resolve,reject) => {
-        query('SELECT * FROM Order LEFT JOIN Type on Type = TypeID WHERE MemberID Like ?', [`%${memberID}%`]).then((result) => {
+        query('SELECT * FROM Order WHERE MemberID Like ?', [`%${memberID}%`]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);})
     })    
