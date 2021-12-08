@@ -8,9 +8,8 @@ const getProducts = (page) => {
     return new Promise((resolve,reject) => {
         if(page===undefined)
             page=1
-        let minLimit=(Number(page)-1)*50  
-        let maxLimit=(Number(page))*50  
-        query('SELECT * FROM Product  LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
+        let minLimit=(Number(page)-1)*50 
+        query('SELECT * FROM Product  LIMIT ?,?', [minLimit,50]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);})
     }) 

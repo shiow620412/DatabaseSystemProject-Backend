@@ -7,7 +7,7 @@ const router = express.Router();
 // find by user id 
 router.get("/",middlewareService.verifyToken,orderController.searchOrder);
 
-router.post('/', middlewareService.verifyToken, orderController.orderProduct);
+router.post('/', middlewareService.verifyToken, orderController.createProduct);
 
 // 取消訂單
 router.delete("/:id",(req,res,next)=>{

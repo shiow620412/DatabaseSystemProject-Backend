@@ -6,9 +6,9 @@ const searchOrder = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
-const orderProduct = (req, res, next) => {
+const createProduct = (req, res, next) => {
   // 成立訂單
-  orderModule.orderProduct(req.user, req.body).then((result) => {
+  orderModule.createProduct(req.user, req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
@@ -16,5 +16,5 @@ const orderProduct = (req, res, next) => {
 export default 
 {
   searchOrder,
-  orderProduct
+  createProduct
 }

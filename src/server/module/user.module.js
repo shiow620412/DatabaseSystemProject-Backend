@@ -14,6 +14,7 @@ const Login = (values) => {
         query("SELECT * FROM Member WHERE Account = ?", values.account).then((result) => {
             const queryPassword = result[0].Password; 
             const userPassword = values.password; 
+            console.log(queryPassword);
             if (queryPassword === userPassword) {
                 // 產生 JWT
                 const payload = {
@@ -73,8 +74,6 @@ const Register = (values) => {
         }).catch((error) => {reject(error);})
     });
 };
-
-
 
 export default {
     Login,

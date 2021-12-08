@@ -30,7 +30,7 @@ import query from '../database/basic.database.js';
  * @param  {string} values.paymentMethod
  * @param  {array} values.productID
  */
- const orderProduct = (user, values) => {
+ const createProduct = (user, values) => {
     let total = 0;
     values.price.forEach((num, index) => {
         total += Number(values.price[index]) * Number(values.quantity[index]);
@@ -59,5 +59,5 @@ import query from '../database/basic.database.js';
 export default 
 {
     searchOrderByID,
-    orderProduct
+    createProduct
 }
