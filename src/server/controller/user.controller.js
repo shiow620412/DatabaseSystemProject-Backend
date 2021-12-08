@@ -22,9 +22,23 @@ const userRegister = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+/** User add credit card */
+const addCredictCard = (req, res, next) => {
+  userModule.addCredictCard(req.user,req.body).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+/** List User's credit card */
+const findCredictCard = (req, res, next) => {
+  userModule.findCredictCard(req.user,req.query["page"]).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
 export default 
 {
   userLogin,
   findPassword,
-  userRegister
+  userRegister,
+  addCredictCard,
+  findCredictCard
 }

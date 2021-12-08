@@ -8,13 +8,11 @@ import query from '../../database/basic.database.js';
  * @param  {string} page
  */
  const listUser = (page) => {
-    console.log(page)
     return new Promise((resolve,reject) => {
         if(page===undefined)
             page=1
         let minLimit=(Number(page)-1)*50  
-        let maxLimit=(Number(page))*50  
-        query('SELECT * FROM Member  LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
+        query('SELECT * FROM Member  LIMIT ?,?', [minLimit,50]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);});
     })    

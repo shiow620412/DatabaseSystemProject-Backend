@@ -1,6 +1,6 @@
 import userController from "../controller/user.controller.js";
 import express from "express";
-import middlewareService from "../helper/middleware.js";
+import middleware from "../helper/middleware.js";
 
 
 const router = express.Router();
@@ -22,13 +22,9 @@ router.put('/information', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
 });
 //新增信用卡
-router.post('/creditcard', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+router.post('/creditCard', middleware.verifyToken, userController.addCredictCard ); 
 //查詢信用卡
-router.get('/creditcard', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+router.get('/creditCard', middleware.verifyToken, userController.findCredictCard ); 
 //修改信用卡
 router.put('/creditcard', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);

@@ -1,6 +1,6 @@
 import express from "express";
 import cartController from "../controller/cart.controller.js";
-import middlewareService from "../helper/middleware.js";
+import middleware from "../helper/middleware.js";
 
 const router = express.Router();
 
@@ -10,6 +10,6 @@ router.delete("/",(req,res,next)=>{
 }); 
 
 //post the product into shoppingCart
-router.post("/", middlewareService.verifyToken, cartController.putProduct); 
+router.post("/", middleware.verifyToken, cartController.putProduct); 
 
 export default router;

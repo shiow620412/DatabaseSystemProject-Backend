@@ -3,9 +3,9 @@ import query from '../database/basic.database.js';
 /** Search the orers by memberID*/
 /**
  * @param  {object} user
+ * @param  {string} user.id
  */
  const searchOrderByID = (user, page) => {
-     console.log(user)
     return new Promise((resolve,reject) => {
         if(page === undefined)
             page = 1

@@ -1,13 +1,13 @@
 import express from "express";
 import orderController from "../controller/order.controller.js";
-import middlewareService from "../helper/middleware.js";
+import middleware from "../helper/middleware.js";
 
 const router = express.Router();
 
 // find by user id 
-router.get("/",middlewareService.verifyToken,orderController.searchOrder);
+router.get("/",middleware.verifyToken,orderController.searchOrder);
 
-router.post('/', middlewareService.verifyToken, orderController.orderProduct);
+router.post('/', middleware.verifyToken, orderController.orderProduct);
 
 // 取消訂單
 router.delete("/:id",(req,res,next)=>{
