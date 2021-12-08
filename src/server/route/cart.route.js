@@ -5,9 +5,8 @@ import middleware from "../helper/middleware.js";
 const router = express.Router();
 
 //delete
-router.delete("/",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-}); 
+router.delete("/", middleware.verifyToken, cartController.removeProduct); 
+
 
 //post the product into shoppingCart
 router.post("/", middleware.verifyToken, cartController.putProduct); 

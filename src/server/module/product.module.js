@@ -30,7 +30,7 @@ const searchProductByName = (productName, page) => {
     })    
 };
 
-const getProductsDetial = (id) => {
+const getProductDetail = (id) => {
     console.log(id)
     return new Promise((resolve,reject) => {
         query('SELECT * FROM `Product` WHERE ProductID = ?',[id]).then((result) => {
@@ -39,9 +39,21 @@ const getProductsDetial = (id) => {
     });
 };
 
-const getRank = () => {
+const rankProductBySales = () => {
     return new Promise((resolve,reject) => {
         query('SELECT * FROM `Product` ORDER BY Sales DESC',).then((result) => {
+            resolve(result)
+        }).catch((error) => {reject(error);})             
+    });
+};
+/**
+ * @param  {string} productName
+ */
+const countProductByCategory = (productName) => {
+    return new Promise((resolve,reject) => {
+        console.log(productName)
+        query(`SELECT TypeName,count(*) as quantity FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName LIKE ? GROUP BY TypeName`,
+        [`%${productName}%`]).then((result) => {
             resolve(result)
         }).catch((error) => {reject(error);})             
     });
@@ -51,6 +63,7 @@ export default
 {
     getProducts,
     searchProductByName,
-    getProductsDetial,
-    getRank
+    getProductDetail,
+    rankProductBySales,
+    countProductByCategory
 }

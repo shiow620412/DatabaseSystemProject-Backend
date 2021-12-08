@@ -7,11 +7,11 @@ const router = express.Router();
 // find by user id 
 router.get("/",middleware.verifyToken,orderController.searchOrder);
 
+//TODO:
 router.post('/', middleware.verifyToken, orderController.orderProduct);
 
 // 取消訂單
 router.delete("/:id",middleware.verifyToken,orderController.deleteOrder);
-
 
 // 查詢訂單詳細資料
 router.get("/:id/detail",middleware.verifyToken,orderController.checkOrderDetail);

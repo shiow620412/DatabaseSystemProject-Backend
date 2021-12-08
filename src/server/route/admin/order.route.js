@@ -6,8 +6,8 @@ const router = express.Router();
 //find all
 router.get('/',orderController.getOrders); 
 
-//modify orders
-router.post("/:id",(req,res,next)=>{
+//modify orders cancel
+router.put("/:id",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
 }); 
 

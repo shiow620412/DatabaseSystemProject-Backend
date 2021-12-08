@@ -1,6 +1,5 @@
 import express from "express";
 import productController from "../controller/product.controller.js";
-import middlewareService from "../helper/middleware.js";
 const router = express.Router();
 
 //product
@@ -11,16 +10,12 @@ router.get('/', productController.getProducts );
 router.get('/search/categories', productController.searchProduct ); 
 
 //查詢商品詳細資料
-router.get("/:id",productController.getProductsDetial);
+router.get("/:id",productController.getProductDetail);
 
 //查詢暢銷商品
-router.get("/rank/sales",productController.getRank);
-
-//TODO:
+router.get("/rank/sales",productController.rankProductBySales);
 
 //查詢name in type 商品有多少
-router.get("/search/category/",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-});
+router.get("/search/category",productController.countProductByCategory);
 
 export default router;

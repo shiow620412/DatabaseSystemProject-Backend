@@ -18,6 +18,21 @@ import query from '../../database/basic.database.js';
     })    
 };
 
+/**
+ * @param  {string} page
+ */
+ const banUsers = (id) => {
+    return new Promise((resolve,reject) => { 
+        query('UPDATE Member SET isBan = 1  WHERE MemberID = ?', [id]).then((result) => {
+            resolve({ 
+                code: 200,
+                message: '停權成功', 
+            });
+        }).catch((error) => {reject(error);});
+    })    
+};
+
 export default {
     listUser,
+    banUsers
 };

@@ -138,7 +138,7 @@ const deleteCreditCard =(user,value)=>{
  * @param  {string} value.name
  * @param  {string} value.address
  */
-const modfiyInformation = (user,value) =>{
+const modifyInformation = (user,value) =>{
     return new Promise((resolve,reject) => {
         query('UPDATE `Member` SET Email = ? , Name = ? ,Address = ? WHERE `MemberID` = ? ', [value.email, value.name, value.address, user.id,]).then((result) => {
             resolve({ 
@@ -156,7 +156,7 @@ const modfiyInformation = (user,value) =>{
  * @param  {string} value.oldPassword
  * @param  {string} value.newPassword
  */
- const modfiyPassword = (user,value) =>{
+ const modifyPassword = (user,value) =>{
     return new Promise((resolve,reject) => {
         query("SELECT * FROM `Member` WHERE MemberID = ? AND Password = ?", [user.id, value.oldPassword]).then((result) => {
             if (Object.keys(result).length === 0) {
@@ -180,6 +180,6 @@ export default {
     addCredictCard,
     findCredictCard,
     deleteCreditCard,
-    modfiyInformation,
-    modfiyPassword
+    modifyInformation,
+    modifyPassword
 };
