@@ -30,8 +30,27 @@ const searchProductByName = (productName, page) => {
     })    
 };
 
+const getProductsDetial = (id) => {
+    console.log(id)
+    return new Promise((resolve,reject) => {
+        query('SELECT * FROM `Product` WHERE ProductID = ?',[id]).then((result) => {
+            resolve(result)
+        }).catch((error) => {reject(error);})             
+    });
+};
+
+const getRank = () => {
+    return new Promise((resolve,reject) => {
+        query('SELECT * FROM `Product` ORDER BY Sales DESC',).then((result) => {
+            resolve(result)
+        }).catch((error) => {reject(error);})             
+    });
+};
+
 export default 
 {
     getProducts,
-    searchProductByName
+    searchProductByName,
+    getProductsDetial,
+    getRank
 }

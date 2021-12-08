@@ -1,6 +1,6 @@
 import productController from "../../controller/admin/product.controller.js";
 import express from "express";
-import middlewareService from "../../helper/middleware.js";
+import middleware from "../../helper/middleware.js";
 
 const router = express.Router();
 //insert

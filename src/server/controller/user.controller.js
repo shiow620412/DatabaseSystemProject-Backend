@@ -42,14 +42,14 @@ const deleteCreditCard = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
-/** delete User's credit card */
+/** modify User's information */
 const modfiyInformation = (req, res, next) => {
   userModule.modfiyInformation(req.user,req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
-/** delete User's credit card */
+/** modfiy User's password */
 const modfiyPassword = (req, res, next) => {
   userModule.modfiyPassword(req.user,req.body).then((result) => {
     res.send(result); // 成功回傳result結果

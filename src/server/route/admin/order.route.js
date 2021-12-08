@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/',orderController.getOrders); 
 
 //modify orders
-router.post("/order/:id",(req,res,next)=>{
+router.post("/:id",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
 }); 
 

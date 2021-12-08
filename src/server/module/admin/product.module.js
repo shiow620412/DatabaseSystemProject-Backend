@@ -22,7 +22,11 @@ import query from '../../database/basic.database.js';
     });
 };
 
+
+
+
 export default
 {
-    addProduct
+    addProduct,
+
 }

@@ -30,6 +30,7 @@ import query from '../database/basic.database.js';
  * @param  {string} values.paymentMethod
  * @param  {array} values.productID
  */
+//TODO:
  const orderProduct = (user, values) => {
     let total = 0;
     values.price.forEach((num, index) => {
@@ -45,6 +46,7 @@ import query from '../database/basic.database.js';
                 values.productID.forEach((value, index) => {
                     parameterBracket.push("(?,?,?)");
                     parameters.push(orderId, value , values.quantity[index]);
+                    query('UPDATE  `Product` SET Sales = Sales + ?, Stock = Stock - ? WHERE ProductID = ?',[ Number(values.quantity[index]), Number(values.quantity[index]), value]);
                 })
                 query(sql+ parameterBracket.join(","),
                 parameters).then((result) => {
@@ -55,9 +57,39 @@ import query from '../database/basic.database.js';
                 });  
         }).catch((error) => {reject(error);});
     });
+};
+
+
+
+const deleteOrder = (user,id) =>{
+    return new Promise((resolve,reject) => { 
+        query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? AND MemberID = ?', [id,user.id]).then((result) => {
+            resolve({ 
+                code: 200,
+                message: '取消成功', 
+            });
+            //TODO: 要加回來
+            query('SELECT O.OrderID ,D.ProductID, D.Quantity FROM `Order` AS O LEFT JOIN OrderDetail AS D on O.OrderID=D.OrderID WHERE O.OrderID = ?',[id])
+            .then((result) =>{
+                console.log(result)
+            })  
+        }).catch((error) => {reject(error);})
+    })    
 }
+// TODO:
+const checkOrderDetail = (user,id) =>{
+    // return new Promise((resolve,reject) => { 
+    //     query('SELECT O.OrderID ,O.MemberID,O.Date,O.OrderStatus,D.ProductID, D.Quantity FROM `Order` AS O LEFT JOIN `OrderDetail` AS D on O.OrderID=D.OrderID WHERE O.OrderID =? ', 
+    //     [id,user.id]).then((result) => {
+            
+    //     }).catch((error) => {reject(error);})
+    // })    
+}
+
 export default 
 {
     searchOrderByID,
-    orderProduct
+    orderProduct,
+    deleteOrder,
+    checkOrderDetail
 }
