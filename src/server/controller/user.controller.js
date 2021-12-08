@@ -8,13 +8,6 @@ const userLogin = (req, res, next) => {
     }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
   
-const getUser = (req, res, next) => {
-  // console.log(typeof req.query["page"])
-  userModule.listUser(req.query["page"]).then((result) => {
-    res.send(result); // 成功回傳result結果
-  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
-};
-
 /* User  findPassword */
 const findPassword = (req, res, next) => {
   userModule.findBackPassword(req.body).then((result) => {
@@ -22,23 +15,9 @@ const findPassword = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+/** User register */
 const userRegister = (req, res, next) => {
-  // 新增會員帳號
   userModule.Register(req.body).then((result) => {
-    res.send(result); // 成功回傳result結果
-  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
-};
-
-const userBuyProduct = (req, res, next) => {
-  // 會員結帳
-  userModule.buyProduct(req.user, req.body).then((result) => {
-    res.send(result); // 成功回傳result結果
-  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
-};
-
-const userShoppingCart = (req, res, next) => {
-  // 放入購物車
-  userModule.shoppingCart(req.user, req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
@@ -46,9 +25,6 @@ const userShoppingCart = (req, res, next) => {
 export default 
 {
   userLogin,
-  getUser,
   findPassword,
-  userRegister,
-  userBuyProduct,
-  userShoppingCart
+  userRegister
 }

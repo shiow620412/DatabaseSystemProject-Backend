@@ -1,26 +1,17 @@
 import userController from "../controller/user.controller.js";
 import express from "express";
-import middlewareService from "../helper/middleware.js"
+import middlewareService from "../helper/middleware.js";
 
 
 const router = express.Router();
 
 /* GET users listing. */
-// TODO: go to admin
-router.get('/',middlewareService.verifyToken, middlewareService.checkAdmin, userController.getUser ); 
 
 router.post('/register', userController.userRegister);
 
 router.post('/login', userController.userLogin ); 
 
 router.get('/findPassword', userController.findPassword ); 
-
-router.post('/buy', middlewareService.verifyToken, userController.userBuyProduct);
-
-router.post('/cart', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
-
 
 //改密碼
 router.put('/password', function(req, res, next) {
@@ -46,7 +37,5 @@ router.put('/creditcard', function(req, res, next) {
 router.delete('/creditcard', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
 });
-
-router.post('/shoppingCart', middlewareService.verifyToken, userController.userShoppingCart);
 
 export default router;

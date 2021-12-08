@@ -10,9 +10,9 @@ router.get('/', function(req, res, next) {
   res.render('admin', { title: 'Express' });
 });
 
-router.use("/order",order);
-router.use("/product",product);
-router.use("/user",user);
+router.use("/orders",order);
+router.use("/products",product);
+router.use("/users",user);
 
 
 export default router;

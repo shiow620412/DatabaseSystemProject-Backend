@@ -13,8 +13,8 @@ router.get('/', function(req, res, next) {
 
 router.use("/orders",order);
 router.use("/products",product);
-router.use("/users",user);
-router.use("/carts",cart);
-router.use("/admins",admin);
+router.use("/user",user);
+router.use("/cart",cart);
+router.use("/admin",admin);
 
 export default router;

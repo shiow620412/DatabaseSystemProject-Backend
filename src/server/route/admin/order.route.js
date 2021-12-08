@@ -6,7 +6,6 @@ const router = express.Router();
 //find all
 router.get('/', middleware.verifyToken,orderController.getOrder); 
 
-
 //modify orders
 router.post("/order/:id",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
