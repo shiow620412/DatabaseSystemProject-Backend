@@ -5,7 +5,7 @@ import middlewareService from "../../helper/middleware.js";
 const router = express.Router();
 //insert
 router.post('/', productController.addProduct); 
-
+// don't need TODO:
 router.delete("/:id",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
 });

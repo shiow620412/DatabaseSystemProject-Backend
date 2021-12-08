@@ -55,13 +55,14 @@ const findBackPassword = (value) => {
  * @param  {string} values.name
  * @param  {string} values.account
  * @param  {string} values.password
+ * @param  {string} values.address
  */
 const Register = (values) => {
     return new Promise((resolve,reject) => {
         query("SELECT * FROM Member WHERE Account = ? AND Email = ?", [values.account,values.email]).then((result) => {
             if (Object.keys(result).length === 0) {
-                query('INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `IsAdmin`) VALUES (?, ?, ?, ?, ?)',
-                    [values.email, values.name, values.account, values.password, 0]).then((result) => {
+                query('INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `Address`, `IsAdmin`, `isBan`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [values.email, values.name, values.account, values.password, values.address, 0 , 0]).then((result) => {
                         resolve({ 
                             code: 200,
                             message: '註冊成功', 
@@ -99,7 +100,10 @@ const addCredictCard = (user,credit) => {
         }).catch((error) => {reject(error);})
     });
 }
-
+/**
+ * @param  {object} user
+ * @param  {number} page
+ */
 const findCredictCard =(user,page)=>{
     return new Promise((resolve,reject) => {
         if(page===undefined)
@@ -110,10 +114,14 @@ const findCredictCard =(user,page)=>{
         }).catch((error) => {reject(error);});
     }) 
 }
-
+/**
+ * @param  {object} user
+ * @param  {number} user.id
+ * @param  {object} value
+ * @param  {string} value.cardNumber
+ */
 const deleteCreditCard =(user,value)=>{
     return new Promise((resolve,reject) => {
-        console.log(value.cardNumber)
         query('DELETE FROM `CreditCard` WHERE `MemberID` = ?  AND `CreditCardNumber` = ? ', [user.id, value.cardNumber]).then((result) => {
             resolve({ 
                 code: 200, 
@@ -122,13 +130,56 @@ const deleteCreditCard =(user,value)=>{
         }).catch((error) => {reject(error);});
     }) 
 }
+/**
+ * @param  {object} user
+ * @param  {number} user.id
+ * @param  {object} value
+ * @param  {string} value.email
+ * @param  {string} value.name
+ * @param  {string} value.address
+ */
+const modfiyInformation = (user,value) =>{
+    return new Promise((resolve,reject) => {
+        query('UPDATE `Member` SET Email = ? , Name = ? ,Address = ? WHERE `MemberID` = ? ', [value.email, value.name, value.address, user.id,]).then((result) => {
+            resolve({ 
+                code: 200, 
+                message: '更改成功', 
+            });  
+        }).catch((error) => {reject(error);});
+    }) 
+}
 
-
+/**
+ * @param  {object} user
+ * @param  {number} user.id
+ * @param  {object} value
+ * @param  {string} value.oldPassword
+ * @param  {string} value.newPassword
+ */
+ const modfiyPassword = (user,value) =>{
+    return new Promise((resolve,reject) => {
+        query("SELECT * FROM `Member` WHERE MemberID = ? AND Password = ?", [user.id, value.oldPassword]).then((result) => {
+            if (Object.keys(result).length === 0) {
+                reject(error.APIError("舊密碼錯誤", new Error()));
+            } else {               
+                 query('UPDATE `Member` SET Password = ? WHERE MemberID = ?',
+                    [value.newPassword,user.id]).then((result) => {
+                        resolve({ 
+                            code: 200,
+                            message: '修改成功', 
+                        });  
+                    });
+            }
+        }).catch((error) => {reject(error);})
+    });
+}
 export default {
     Login,
     findBackPassword ,
     Register,
     addCredictCard,
     findCredictCard,
-    deleteCreditCard
+    deleteCreditCard,
+    modfiyInformation,
+    modfiyPassword
 };

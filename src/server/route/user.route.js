@@ -10,26 +10,24 @@ const router = express.Router();
 router.post('/register', userController.userRegister);
 
 router.post('/login', userController.userLogin ); 
-//未完成
+
+//暫時不用
 router.get('/findPassword', userController.findPassword ); 
-//TODO:
+
 //改密碼
-router.put('/password', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+router.put('/password', middleware.verifyToken, userController.modfiyPassword );
+
 //改個資
-router.put('/information', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+router.put('/information', middleware.verifyToken, userController.modfiyInformation );
 
 //新增信用卡
-router.post('/creditCard', middleware.verifyToken, userController.addCredictCard ); 
+router.post('/creditCard', middleware.verifyToken, userController.addCredictCard );
+
 //查詢信用卡
-router.get('/creditCard', middleware.verifyToken, userController.findCredictCard ); 
+router.get('/creditCard', middleware.verifyToken, userController.findCredictCard );
+
 //刪除信用卡
-router.delete('/creditCard',middleware.verifyToken,userController.deleteCreditCard);
-//修改信用卡 用不到
-router.put('/creditcard', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+router.delete('/creditCard',middleware.verifyToken,userController.deleteCreditCard );
+
+
 export default router;

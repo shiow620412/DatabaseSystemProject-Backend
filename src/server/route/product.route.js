@@ -9,7 +9,7 @@ router.get('/', productController.getProducts );
 
 //find 單一種類
 router.get('/search', productController.searchProduct ); 
-
+//TODO:
 //查詢商品詳細資料
 router.get("/:id",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
