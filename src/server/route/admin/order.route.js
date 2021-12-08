@@ -4,7 +4,7 @@ import orderController from "../../controller/admin/order.controller.js";
 const router = express.Router();
 
 //find all
-router.get('/', middleware.verifyToken,orderController.getOrder); 
+router.get('/',orderController.getOrders); 
 
 //modify orders
 router.post("/order/:id",(req,res,next)=>{

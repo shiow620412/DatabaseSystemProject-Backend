@@ -4,7 +4,7 @@ import middlewareService from "../../helper/middleware.js";
 
 const router = express.Router();
 //insert
-router.post('/',middlewareService.verifyToken,middlewareService.checkAdmin, productController.addProduct); 
+router.post('/', productController.addProduct); 
 
 router.delete("/:id",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);

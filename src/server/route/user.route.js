@@ -25,7 +25,7 @@ router.put('/information', function(req, res, next) {
 router.post('/creditCard', middleware.verifyToken, userController.addCredictCard ); 
 //查詢信用卡
 router.get('/creditCard', middleware.verifyToken, userController.findCredictCard ); 
-//修改信用卡
+//修改信用卡 用不到
 router.put('/creditcard', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
 });

@@ -78,7 +78,7 @@ const Register = (values) => {
  * @param  {string} user.id
  * @param  {object} credit
  * @param  {string} credit.number
- * @param  {number} credit.secret
+ * @param  {string} credit.secret
  * @param  {number} credit.month
  * @param  {number} credit.year
  */
