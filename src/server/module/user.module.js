@@ -111,11 +111,24 @@ const findCredictCard =(user,page)=>{
     }) 
 }
 
+const deleteCreditCard =(user,value)=>{
+    return new Promise((resolve,reject) => {
+        console.log(value.cardNumber)
+        query('DELETE FROM `CreditCard` WHERE `MemberID` = ?  AND `CreditCardNumber` = ? ', [user.id, value.cardNumber]).then((result) => {
+            resolve({ 
+                code: 200, 
+                message: '刪除成功', 
+            });  
+        }).catch((error) => {reject(error);});
+    }) 
+}
+
 
 export default {
     Login,
     findBackPassword ,
     Register,
     addCredictCard,
-    findCredictCard
+    findCredictCard,
+    deleteCreditCard
 };

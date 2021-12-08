@@ -34,11 +34,19 @@ const findCredictCard = (req, res, next) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
+
+/** delete User's credit card */
+const deleteCreditCard = (req, res, next) => {
+  userModule.deleteCreditCard(req.user,req.body).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
 export default 
 {
   userLogin,
   findPassword,
   userRegister,
   addCredictCard,
-  findCredictCard
+  findCredictCard,
+  deleteCreditCard
 }
