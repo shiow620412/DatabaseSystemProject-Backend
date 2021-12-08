@@ -8,6 +8,6 @@ router.post("/users/:id/banstatus",(req,res,next)=>{
     res.send(req.method+" "+req.originalUrl);
 }); 
 
-router.get('/', middlewareService.verifyToken, middlewareService.checkAdmin, userController.getUser ); 
+router.get('/', userController.getUsers ); 
 
 export default router;

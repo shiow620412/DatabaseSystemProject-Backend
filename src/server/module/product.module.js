@@ -8,7 +8,7 @@ const getProducts = (page) => {
     return new Promise((resolve,reject) => {
         if(page===undefined)
             page=1
-        let minLimit=(Number(page)-1)*50 
+        let minLimit=(Number(page)-1)*50  
         query('SELECT * FROM Product  LIMIT ?,?', [minLimit,50]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);})

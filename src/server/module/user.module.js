@@ -74,9 +74,62 @@ const Register = (values) => {
         }).catch((error) => {reject(error);})
     });
 };
+/**
+ * @param  {object} user
+ * @param  {string} user.id
+ * @param  {object} credit
+ * @param  {string} credit.number
+ * @param  {string} credit.secret
+ * @param  {number} credit.month
+ * @param  {number} credit.year
+ */
+const addCredictCard = (user,credit) => {
+    return new Promise((resolve,reject) => {
+        query("SELECT * FROM `CreditCard` WHERE CreditCardNumber = ? AND SecurityCode = ?", [credit.number,credit.secret]).then((result) => {
+            if (Object.keys(result).length === 0) {
+                query('INSERT INTO `CreditCard`(`CreditCardNumber`, `MemberID`, `ExpireYear`, `ExpireMonth`, `SecurityCode`) VALUES (?, ?, ?, ?, ?)',
+                    [credit.number, user.id, credit.year, credit.month, credit.secret]).then((result) => {
+                        resolve({ 
+                            code: 200, 
+                            message: '新增成功', 
+                        });  
+                    });
+            } else {
+                reject(error.APIError("新增失敗", new Error())); 
+            }
+        }).catch((error) => {reject(error);})
+    });
+}
+
+const findCredictCard =(user,page)=>{
+    return new Promise((resolve,reject) => {
+        if(page===undefined)
+            page=1
+        let minLimit=(Number(page)-1)*50  
+        query('SELECT * FROM `CreditCard` WHERE `MemberID` = ?  LIMIT ?,?', [user.id, minLimit, 50]).then((result) => {
+            resolve(result); 
+        }).catch((error) => {reject(error);});
+    }) 
+}
+
+const deleteCreditCard =(user,value)=>{
+    return new Promise((resolve,reject) => {
+        console.log(value.cardNumber)
+        query('DELETE FROM `CreditCard` WHERE `MemberID` = ?  AND `CreditCardNumber` = ? ', [user.id, value.cardNumber]).then((result) => {
+            resolve({ 
+                code: 200, 
+                message: '刪除成功', 
+            });  
+        }).catch((error) => {reject(error);});
+    }) 
+}
+
 
 export default {
     Login,
     findBackPassword ,
     Register,
+    addCredictCard,
+    findCredictCard,
+    deleteCreditCard
 };

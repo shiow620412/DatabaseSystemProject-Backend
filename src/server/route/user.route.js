@@ -1,6 +1,6 @@
 import userController from "../controller/user.controller.js";
 import express from "express";
-import middlewareService from "../helper/middleware.js";
+import middleware from "../helper/middleware.js";
 
 
 const router = express.Router();
@@ -10,9 +10,9 @@ const router = express.Router();
 router.post('/register', userController.userRegister);
 
 router.post('/login', userController.userLogin ); 
-
+//未完成
 router.get('/findPassword', userController.findPassword ); 
-
+//TODO:
 //改密碼
 router.put('/password', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
@@ -21,21 +21,15 @@ router.put('/password', function(req, res, next) {
 router.put('/information', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
 });
+
 //新增信用卡
-router.post('/creditcard', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+router.post('/creditCard', middleware.verifyToken, userController.addCredictCard ); 
 //查詢信用卡
-router.get('/creditcard', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
-//修改信用卡
+router.get('/creditCard', middleware.verifyToken, userController.findCredictCard ); 
+//刪除信用卡
+router.delete('/creditCard',middleware.verifyToken,userController.deleteCreditCard);
+//修改信用卡 用不到
 router.put('/creditcard', function(req, res, next) {
     res.send(req.method+" "+req.originalUrl);
 });
-//刪除信用卡
-router.delete('/creditcard', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
-
 export default router;
