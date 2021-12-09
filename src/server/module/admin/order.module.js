@@ -16,6 +16,30 @@ import query from '../../database/basic.database.js';
         
 };
 
+
+
+/**
+ * @param  {number} id
+ */
+ const modifyOrder = (id) => {
+    return new Promise((resolve,reject) => { 
+        query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? ', [id]).then((result) => {
+            resolve({ 
+                code: 200,
+                message: '取消成功', 
+            });
+            query('UPDATE Product,OrderDetail SET Product.Stock = Product.Stock + OrderDetail.Quantity WHERE Product.ProductID = OrderDetail.ProductID AND OrderID = ?',[id])
+            .then((result) =>{
+                console.log(result)
+            })  
+        }).catch((error) => {reject(error);})
+    }) 
+        
+};
+
+
+
 export default{
-    getOrderlist
+    getOrderlist,
+    modifyOrder
 }

@@ -7,7 +7,7 @@ const router = express.Router();
 // find by user id 
 router.get("/",middleware.verifyToken,orderController.searchOrder);
 
-//TODO:
+//TODO: 要判斷庫存
 router.post('/', middleware.verifyToken, orderController.orderProduct);
 
 // 取消訂單

@@ -7,9 +7,6 @@ const router = express.Router();
 router.get('/',orderController.getOrders); 
 
 //modify orders cancel
-router.put("/:id",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-}); 
-
+router.put('/:id',orderController.modifyOrder); 
 
 export default router;

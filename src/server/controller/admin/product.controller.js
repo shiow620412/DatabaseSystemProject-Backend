@@ -6,7 +6,14 @@ const addProduct = (req, res, next) => {
     }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+const deleteProduct = (req, res, next) => {
+  productModule.deleteProduct(req.params.id).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
 export default
 {
-    addProduct
+    addProduct,
+    deleteProduct
 }

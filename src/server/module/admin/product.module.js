@@ -21,12 +21,27 @@ import query from '../../database/basic.database.js';
         }).catch((error) => {reject(error);})             
     });
 };
-
-
+/**
+ * @param  {string} id
+ */
+const deleteProduct = (id) => {
+    return new Promise((resolve,reject) => {
+        let no="No";
+        console.log(id)
+        query('UPDATE  `Product` SET OnShelf = ? WHERE ProductID = ?',
+        [no,id]).then((result) => {
+            resolve({
+                code: 200,
+                message: "商品下架成功",
+            })
+        }).catch((error) => {reject(error);})             
+    });
+};
 
 
 export default
 {
     addProduct,
+    deleteProduct
 
 }
