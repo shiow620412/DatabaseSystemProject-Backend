@@ -23,17 +23,17 @@ import query from '../database/basic.database.js';
  * @param  {string} user.name
  * @param  {string} user.mail
  * @param  {object} values
- * @param  {array} values.price
- * @param  {array} values.quantity
+ * @param  {number[]} values.price
+ * @param  {number[]} values.quantity
  * @param  {string} values.date
- * @param  {string} values.orderStatus
- * @param  {string} values.paymentMethod
- * @param  {array} values.productID
+ * @param  {number} values.orderStatus
+ * @param  {number} values.paymentMethod
+ * @param  {number[]} values.productID
  */
  const createProduct = (user, values) => {
     let total = 0;
     values.price.forEach((num, index) => {
-        total += Number(values.price[index]) * Number(values.quantity[index]);
+        total += (values.price[index]) * (values.quantity[index]);
     });
     return new Promise((resolve,reject) => {
         query('INSERT INTO `Order` (`MemberID`,`Date`, `Total`, `OrderStatus`, `PaymentMethod`) VALUES (?, ?, ?, ?, ?)',
@@ -45,6 +45,7 @@ import query from '../database/basic.database.js';
                 values.productID.forEach((value, index) => {
                     parameterBracket.push("(?,?,?)");
                     parameters.push(orderId, value , values.quantity[index]);
+                    query('UPDATE  `Product` SET Sales = Sales + ?, Stock = Stock - ? WHERE ProductID = ?',[ (values.quantity[index]), (values.quantity[index]), value]);
                 })
                 query(sql+ parameterBracket.join(","),
                 parameters).then((result) => {
@@ -55,9 +56,38 @@ import query from '../database/basic.database.js';
                 });  
         }).catch((error) => {reject(error);});
     });
+};
+
+
+
+const deleteOrder = (user,id) =>{
+    return new Promise((resolve,reject) => { 
+        query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? AND MemberID = ?', [id,user.id]).then((result) => {
+            resolve({ 
+                code: 200,
+                message: '取消成功', 
+            });
+            query('UPDATE Product,OrderDetail SET Product.Stock = Product.Stock + OrderDetail.Quantity WHERE Product.ProductID = OrderDetail.ProductID AND OrderID = ?',[id])
+            .then((result) =>{
+                console.log(result)
+            })  
+        }).catch((error) => {reject(error);})
+    })    
 }
+
+const checkOrderDetail = (user,id) =>{
+    return new Promise((resolve,reject) => { 
+        query('SELECT O.OrderID ,O.MemberID,O.Date,O.OrderStatus,D.ProductID,D.Quantity FROM `Order` AS O LEFT JOIN OrderDetail AS D on O.OrderID=D.OrderID WHERE O.OrderID =? AND O.MemberID =?', 
+        [id,user.id]).then((result) => {
+            resolve(result);
+        }).catch((error) => {reject(error);})
+    })    
+}
+
 export default 
 {
     searchOrderByID,
-    createProduct
+    createProduct,
+    deleteOrder,
+    checkOrderDetail
 }

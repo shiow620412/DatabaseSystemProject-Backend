@@ -27,6 +27,27 @@ const putProduct = (user, values) => {
     })
 }
 
+/** User put the product to the shopping cart */
+/**
+ * @param  {object} user
+ * @param  {string} user.id
+ * @param  {object} values
+ * @param  {string} values.productID
+ */
+ const removeProduct = (user, values) => {
+    return new Promise((resolve,reject) => {
+        query('DELETE FROM ShoppingCart WHERE MemberID =? and ProductID =?',[user.id,values.productID]).then((result) => {
+            resolve({
+                code: 200,
+                message: "移除成功",
+            });
+        }).catch((error) => {reject(error);});
+    })
+}
+
+
+
 export default {
-    putProduct
+    putProduct,
+    removeProduct
 };

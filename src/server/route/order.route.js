@@ -10,13 +10,9 @@ router.get("/",middleware.verifyToken,orderController.searchOrder);
 router.post('/', middleware.verifyToken, orderController.createProduct);
 
 // 取消訂單
-router.delete("/:id",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-});
+router.delete("/:id",middleware.verifyToken,orderController.deleteOrder);
 
 // 查詢訂單詳細資料
-router.get("/:id/detail",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-});
+router.get("/:id/detail",middleware.verifyToken,orderController.checkOrderDetail);
 
 export default router;

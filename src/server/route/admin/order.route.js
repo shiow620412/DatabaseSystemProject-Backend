@@ -6,10 +6,7 @@ const router = express.Router();
 //find all
 router.get('/',orderController.getOrders); 
 
-//modify orders
-router.post("/order/:id",(req,res,next)=>{
-    res.send(req.method+" "+req.originalUrl);
-}); 
-
+//modify orders cancel
+router.put('/:id',orderController.modifyOrder); 
 
 export default router;

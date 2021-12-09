@@ -6,6 +6,14 @@ const getOrders = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+
+const modifyOrder = (req, res, next) => {
+  orderModule.modifyOrder(req.param.id).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
 export default{
-  getOrders
+  getOrders,
+  modifyOrder
 }
