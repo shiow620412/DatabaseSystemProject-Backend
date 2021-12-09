@@ -30,11 +30,7 @@ const checkOrderDetail = (req, res, next) => {
 export default 
 {
   searchOrder,
-<<<<<<< HEAD
-  createProduct
-=======
-  orderProduct,
+  createProduct,
   deleteOrder,
   checkOrderDetail
->>>>>>> tim
 }

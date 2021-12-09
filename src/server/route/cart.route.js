@@ -11,4 +11,6 @@ router.delete("/", middleware.verifyToken, cartController.removeProduct);
 //post the product into shoppingCart
 router.post("/", middleware.verifyToken, cartController.putProduct); 
 
+router.put("/", middleware.verifyToken, cartController.modifyProductQuantity); 
+
 export default router;

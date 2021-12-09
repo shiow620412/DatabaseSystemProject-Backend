@@ -1,6 +1,6 @@
 import query from '../database/basic.database.js';
 
-/** Search the orers by memberID*/
+/** Search the orders by memberID*/
 /**
  * @param  {object} user
  * @param  {string} user.id
@@ -58,8 +58,11 @@ import query from '../database/basic.database.js';
     });
 };
 
-
-
+/** User delete the order */
+/**
+ * @param  {object} user
+ * @param  {string} user.id
+ */
 const deleteOrder = (user,id) =>{
     return new Promise((resolve,reject) => { 
         query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? AND MemberID = ?', [id,user.id]).then((result) => {
@@ -75,6 +78,11 @@ const deleteOrder = (user,id) =>{
     })    
 }
 
+/** User check the order detail */
+/**
+ * @param  {object} user
+ * @param  {string} user.id
+ */
 const checkOrderDetail = (user,id) =>{
     return new Promise((resolve,reject) => { 
         query('SELECT O.OrderID ,O.MemberID,O.Date,O.OrderStatus,D.ProductID,D.Quantity FROM `Order` AS O LEFT JOIN OrderDetail AS D on O.OrderID=D.OrderID WHERE O.OrderID =? AND O.MemberID =?', 

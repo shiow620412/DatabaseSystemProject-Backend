@@ -1,9 +1,10 @@
 import query from '../../database/basic.database.js';
+
 /** List the orders on page  */
 /**
  * @param  {string} page
  */
- const getOrderlist = (page) => {
+ const getOrderList = (page) => {
     return new Promise((resolve,reject) => {
         if(page===undefined)
             page=1
@@ -16,14 +17,12 @@ import query from '../../database/basic.database.js';
         
 };
 
-
-
 /**
  * @param  {number} id
  */
- const modifyOrder = (id) => {
+ const modifyOrder = (user, id) => {
     return new Promise((resolve,reject) => { 
-        query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? ', [id]).then((result) => {
+        query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? AND MemberID = ?', [user.id, id]).then((result) => {
             resolve({ 
                 code: 200,
                 message: '取消成功', 
@@ -33,13 +32,10 @@ import query from '../../database/basic.database.js';
                 console.log(result)
             })  
         }).catch((error) => {reject(error);})
-    }) 
-        
+    })     
 };
 
-
-
 export default{
-    getOrderlist,
+    getOrderList,
     modifyOrder
 }

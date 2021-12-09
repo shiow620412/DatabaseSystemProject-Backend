@@ -7,6 +7,7 @@ const router = express.Router();
 // find by user id 
 router.get("/",middleware.verifyToken,orderController.searchOrder);
 
+// 建立訂單
 router.post('/', middleware.verifyToken, orderController.createProduct);
 
 // 取消訂單
