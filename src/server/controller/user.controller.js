@@ -23,14 +23,15 @@ const userRegister = (req, res, next) => {
 };
 
 /** User add credit card */
-const addCredictCard = (req, res, next) => {
-  userModule.addCredictCard(req.user,req.body).then((result) => {
+const addCreditCard = (req, res, next) => {
+  userModule.addCreditCard(req.user,req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
+
 /** List User's credit card */
-const findCredictCard = (req, res, next) => {
-  userModule.findCredictCard(req.user,req.query["page"]).then((result) => {
+const findCreditCard = (req, res, next) => {
+  userModule.findCreditCard(req.user,req.query["page"]).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
@@ -43,15 +44,15 @@ const deleteCreditCard = (req, res, next) => {
 };
 
 /** modify User's information */
-const modfiyInformation = (req, res, next) => {
-  userModule.modfiyInformation(req.user,req.body).then((result) => {
+const modifyInformation = (req, res, next) => {
+  userModule.modifyInformation(req.user,req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
-/** modfiy User's password */
-const modfiyPassword = (req, res, next) => {
-  userModule.modfiyPassword(req.user,req.body).then((result) => {
+/** modify User's password */
+const modifyPassword = (req, res, next) => {
+  userModule.modifyPassword(req.user,req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
@@ -61,9 +62,9 @@ export default
   userLogin,
   findPassword,
   userRegister,
-  addCredictCard,
-  findCredictCard,
+  addCreditCard,
+  findCreditCard,
   deleteCreditCard,
-  modfiyInformation,
-  modfiyPassword
+  modifyInformation,
+  modifyPassword
 }

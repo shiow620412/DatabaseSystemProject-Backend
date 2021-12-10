@@ -45,9 +45,27 @@ const putProduct = (user, values) => {
     })
 }
 
-
+/** User modify the quantity of product in shopping cart */
+/**
+ * @param  {object} user
+ * @param  {string} user.id
+ * @param  {object} values
+ * @param  {string} values.productID
+ * @param  {number} values.quantity
+ */
+const modifyProductQuantity = (user, values) => {
+    return new Promise((resolve,reject) => {
+        query('UPDATE `ShoppingCart` SET Quantity = ? WHERE MemberID = ? AND ProductID = ? ',[values.quantity, user.id,values.productID]).then((result) => {
+            resolve({
+                code: 200,
+                message: "商品數量更改成功",
+            });
+        }).catch((error) => {reject(error);});
+    })
+}
 
 export default {
     putProduct,
-    removeProduct
+    removeProduct,
+    modifyProductQuantity
 };

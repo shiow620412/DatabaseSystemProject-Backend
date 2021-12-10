@@ -14,6 +14,7 @@ const Login = (values) => {
         query("SELECT * FROM Member WHERE Account = ?", values.account).then((result) => {
             const queryPassword = result[0].Password; 
             const userPassword = values.password; 
+            console.log(queryPassword);
             if (queryPassword === userPassword) {
                 // 產生 JWT
                 const payload = {
@@ -74,6 +75,8 @@ const Register = (values) => {
         }).catch((error) => {reject(error);})
     });
 };
+
+/** User add the credit card */
 /**
  * @param  {object} user
  * @param  {string} user.id
@@ -83,7 +86,7 @@ const Register = (values) => {
  * @param  {number} credit.month
  * @param  {number} credit.year
  */
-const addCredictCard = (user,credit) => {
+const addCreditCard = (user,credit) => {
     return new Promise((resolve,reject) => {
         query("SELECT * FROM `CreditCard` WHERE CreditCardNumber = ? AND SecurityCode = ?", [credit.number,credit.secret]).then((result) => {
             if (Object.keys(result).length === 0) {
@@ -100,11 +103,13 @@ const addCredictCard = (user,credit) => {
         }).catch((error) => {reject(error);})
     });
 }
+
+/** List the credit card by MemberID */
 /**
  * @param  {object} user
  * @param  {number} page
  */
-const findCredictCard =(user,page)=>{
+const findCreditCard =(user,page)=>{
     return new Promise((resolve,reject) => {
         if(page===undefined)
             page=1
@@ -114,6 +119,8 @@ const findCredictCard =(user,page)=>{
         }).catch((error) => {reject(error);});
     }) 
 }
+
+/** User delete the credit card */
 /**
  * @param  {object} user
  * @param  {number} user.id
@@ -130,6 +137,8 @@ const deleteCreditCard =(user,value)=>{
         }).catch((error) => {reject(error);});
     }) 
 }
+
+/** User modify the information */
 /**
  * @param  {object} user
  * @param  {number} user.id
@@ -149,6 +158,7 @@ const modifyInformation = (user,value) =>{
     }) 
 }
 
+/** User modify the password */
 /**
  * @param  {object} user
  * @param  {number} user.id
@@ -173,12 +183,13 @@ const modifyInformation = (user,value) =>{
         }).catch((error) => {reject(error);})
     });
 }
+
 export default {
     Login,
     findBackPassword ,
     Register,
-    addCredictCard,
-    findCredictCard,
+    addCreditCard,
+    findCreditCard,
     deleteCreditCard,
     modifyInformation,
     modifyPassword

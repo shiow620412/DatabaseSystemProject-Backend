@@ -21,6 +21,7 @@ import query from '../../database/basic.database.js';
         }).catch((error) => {reject(error);})             
     });
 };
+
 /**
  * @param  {string} id
  */
@@ -38,10 +39,29 @@ const deleteProduct = (id) => {
     });
 };
 
+/**
+ * @param  {string} id
+ * @param  {object} values
+ * @param  {number} values.price
+ * @param  {string} values.thumbnail
+ * @param  {string} values.description
+ * @param  {number} values.stock
+ */
+ const modifyProduct = (id, values) => {
+    return new Promise((resolve,reject) => {
+        query('UPDATE  `Product` SET Price = ?, Thumbnail = ?, Description = ?, Stock = ? WHERE ProductID = ?',
+        [values.price, values.thumbnail, values.description, values.stock, id]).then((result) => {
+            resolve({
+                code: 200,
+                message: "商品資訊更新成功",
+            })
+        }).catch((error) => {reject(error);})             
+    });
+};
 
 export default
 {
     addProduct,
-    deleteProduct
-
+    deleteProduct,
+    modifyProduct
 }

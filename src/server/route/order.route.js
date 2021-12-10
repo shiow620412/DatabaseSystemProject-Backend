@@ -7,8 +7,8 @@ const router = express.Router();
 // find by user id 
 router.get("/",middleware.verifyToken,orderController.searchOrder);
 
-//TODO: 要判斷庫存
-router.post('/', middleware.verifyToken, orderController.orderProduct);
+// 建立訂單
+router.post('/', middleware.verifyToken, orderController.createProduct);
 
 // 取消訂單
 router.delete("/:id",middleware.verifyToken,orderController.deleteOrder);

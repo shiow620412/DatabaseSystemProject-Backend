@@ -46,6 +46,7 @@ const rankProductBySales = () => {
         }).catch((error) => {reject(error);})             
     });
 };
+
 /**
  * @param  {string} productName
  */
