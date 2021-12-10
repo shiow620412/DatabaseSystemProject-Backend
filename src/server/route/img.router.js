@@ -1,12 +1,8 @@
 import express from "express";
+import imgController from "../../controller/img.controller.js";
 const router = express.Router();
 
 
-router.post("/upload", (req, res, next) => {
+router.get("/:filename", (req, res, next) => {
     res.send(req.method + " " + req.originalUrl);
 });
-
-
-//
-
-export default router;

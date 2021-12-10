@@ -6,6 +6,7 @@ import checkAdminByUserID from "../database/member.database.js";
 import error from "./error.js";
 
 
+
 function verifyToken(req, res, next){
     const bearerHeader = req.headers.authorization;
     if (typeof bearerHeader !== 'undefined') {
@@ -77,8 +78,11 @@ function checkAdmin(req, res, next){
     
 }
 
+
+
 export default {
     verifyToken,
     outputError,
     checkAdmin,
+    
 };
