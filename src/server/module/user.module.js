@@ -62,8 +62,10 @@ const Register = (values) => {
     return new Promise((resolve,reject) => {
         query("SELECT * FROM Member WHERE Account = ? AND Email = ?", [values.account,values.email]).then((result) => {
             if (Object.keys(result).length === 0) {
-                query('INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `Address`, `IsAdmin`, `isBan`) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                    [values.email, values.name, values.account, values.password, values.address, 0 , 0]).then((result) => {
+                let phone = "";
+                let address="";
+                query('INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `Address`,`Phone`, `IsAdmin`, `isBan`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [values.email, values.name, values.account, values.password, address, phone,  0 , 0]).then((result) => {
                         resolve({ 
                             code: 200,
                             message: '註冊成功', 
@@ -146,10 +148,11 @@ const deleteCreditCard =(user,value)=>{
  * @param  {string} value.email
  * @param  {string} value.name
  * @param  {string} value.address
+ * @param  {string} value.phone
  */
 const modifyInformation = (user,value) =>{
     return new Promise((resolve,reject) => {
-        query('UPDATE `Member` SET Email = ? , Name = ? ,Address = ? WHERE `MemberID` = ? ', [value.email, value.name, value.address, user.id,]).then((result) => {
+        query('UPDATE `Member` SET Email = ? , Name = ? ,Address = ? ,Phone = ? WHERE `MemberID` = ? ', [value.email, value.name, value.address, value.phone, user.id,]).then((result) => {
             resolve({ 
                 code: 200, 
                 message: '更改成功', 

@@ -10,9 +10,18 @@ import query from '../database/basic.database.js';
         if(page === undefined)
             page = 1
         let minLimit = (Number(page)-1)*20  
-        query('SELECT * FROM `Order` WHERE MemberID = ? LIMIT ?,?', [user.id, minLimit, 20]).then((result) => {
-            resolve(result); 
-        }).catch((error) => {reject(error);})
+        let count;
+        query('SELECT COUNT(*) as _count FROM `Order` WHERE MemberID = ? ',[user.id]).then((result)=>{
+            count = Number(result[0]._count);
+            let numOfPage = Math.ceil(count/20);
+            query('SELECT * FROM `Order` WHERE MemberID = ? LIMIT ?,?', [user.id, minLimit, 20]).then((result) => {
+                resolve({ 
+                    result,
+                    count,
+                    numOfPage,
+                }); 
+            }).catch((error) => {reject(error);});
+        }).catch((error) => {reject(error);});
     })    
 };
 
@@ -30,7 +39,7 @@ import query from '../database/basic.database.js';
  * @param  {number} values.paymentMethod
  * @param  {number[]} values.productID
  */
- const createProduct = (user, values) => {
+ const createOrder = (user, values) => {
     let total = 0;
     values.price.forEach((num, index) => {
         total += (values.price[index]) * (values.quantity[index]);
@@ -95,7 +104,7 @@ const checkOrderDetail = (user,id) =>{
 export default 
 {
     searchOrderByID,
-    createProduct,
+    createOrder,
     deleteOrder,
     checkOrderDetail
 }

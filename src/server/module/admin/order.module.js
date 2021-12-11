@@ -9,10 +9,18 @@ import query from '../../database/basic.database.js';
         if(page===undefined)
             page=1
         let minLimit=(Number(page)-1)*50  
-        let maxLimit=(Number(page))*50  
-        query('SELECT * FROM `Order` LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
-            resolve(result); 
-        }).catch((error) => {reject(error);})
+        let count;
+        query('SELECT COUNT(*) as _count FROM Order ').then((result)=>{
+            count = Number(result[0]._count);
+            let numOfPage = Math.ceil(count/20);
+            query('SELECT * FROM Order  LIMIT ?,?', [minLimit,50]).then((result) => {
+                resolve({ 
+                    result,
+                    count,
+                    numOfPage,
+                }); 
+            }).catch((error) => {reject(error);});
+        }).catch((error) => {reject(error);});
     })
         
 };

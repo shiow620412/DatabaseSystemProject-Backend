@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/",middleware.verifyToken,orderController.searchOrder);
 
 // 建立訂單
-router.post('/', middleware.verifyToken, orderController.createProduct);
+router.post('/', middleware.verifyToken, orderController.createOrder);
 
 // 取消訂單
 router.delete("/:id",middleware.verifyToken,orderController.deleteOrder);

@@ -7,7 +7,7 @@ const router = express.Router();
 //delete
 router.delete("/", middleware.verifyToken, cartController.removeProduct); 
 
-//TODO: 要判斷庫存
+//TODO: 要判斷同商品同user ID 要合併
 //post the product into shoppingCart
 router.post("/", middleware.verifyToken, cartController.putProduct); 
 

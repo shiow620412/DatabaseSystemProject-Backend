@@ -12,8 +12,17 @@ import query from '../../database/basic.database.js';
         if(page===undefined)
             page=1
         let minLimit=(Number(page)-1)*50  
-        query('SELECT * FROM Member  LIMIT ?,?', [minLimit,50]).then((result) => {
-            resolve(result); 
+        let count;
+        query('SELECT COUNT(*) as _count FROM Member ').then((result)=>{
+            count = Number(result[0]._count);
+            let numOfPage = Math.ceil(count/20);
+            query('SELECT * FROM Member  LIMIT ?,?', [minLimit,50]).then((result) => {
+                resolve({ 
+                    result,
+                    count,
+                    numOfPage,
+                }); 
+            }).catch((error) => {reject(error);});
         }).catch((error) => {reject(error);});
     })    
 };
