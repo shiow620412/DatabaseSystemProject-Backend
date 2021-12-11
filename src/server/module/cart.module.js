@@ -15,7 +15,7 @@ const putProduct = (user, values) => {
             console.log(result);
             stock = Number(result[0].Stock);
             if (stock >= values.quantity) {
-                query('INSERT INTO `ShoppingCart` (`MemberID`, `ProductID`, `Quantity`) VALUES (?,?,?)', [user.id, values.productID, values.quantity]).then((result) => {
+                query('INSERT INTO `ShoppingCart` (`MemberID`, `ProductID`, `Quantity`) VALUES (?,?,?)', [user.id, values.productIDgi, values.quantity]).then((result) => {
                     resolve({
                         code: 200,
                         message: "放置購物車成功",
