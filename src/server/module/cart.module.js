@@ -5,8 +5,8 @@ import error from '../helper/error.js';
  * @param  {object} user
  * @param  {string} user.id
  * @param  {object} values
- * @param  {array} values.productID
- * @param  {array} values.quantity
+ * @param  {number} values.productID
+ * @param  {number} values.quantity
  */
 const putProduct = (user, values) => {
     return new Promise((resolve, reject) => {
@@ -15,14 +15,33 @@ const putProduct = (user, values) => {
             console.log(result);
             stock = Number(result[0].Stock);
             if (stock >= values.quantity) {
-                query('INSERT INTO `ShoppingCart` (`MemberID`, `ProductID`, `Quantity`) VALUES (?,?,?)', [user.id, values.productIDgi, values.quantity]).then((result) => {
-                    resolve({
-                        code: 200,
-                        message: "放置購物車成功",
-                    });
+                query("SELECT * FROM ShoppingCart WHERE MemberID = ? AND ProductID = ?", [user.id, values.productID]).then((results) => {
+                    if (Object.keys(results).length === 0) {
+                        query('INSERT INTO `ShoppingCart` (`MemberID`, `ProductID`, `Quantity`) VALUES (?,?,?)', [user.id, values.productID, values.quantity]).then((result) => {
+                            resolve({
+                                code: 200,
+                                message: "放置購物車成功",
+                            });
+                        }).catch((error) => {
+                            reject(error);
+                        })
+
+                    } else {
+                        const newQuantity = Number(results[0].Quantity) + Number(values.quantity);
+                        console.log(newQuantity);
+                        console.log(results);
+                        query('UPDATE `ShoppingCart` SET Quantity = ?  WHERE MemberID = ? AND ProductID = ?', [newQuantity, user.id, values.productID]).then((result) => {
+                            resolve({
+                                code: 200,
+                                message: "商品數量增加成功",
+                            });
+                        }).catch((error) => {
+                            reject(error);
+                        })
+                    }
                 }).catch((error) => {
                     reject(error);
-                });
+                })
             } else {
                 reject(error.APIError("數量不足", new Error()));
             }
@@ -41,7 +60,7 @@ const putProduct = (user, values) => {
  * @param  {object} values
  * @param  {string} values.productID
  */
-const removeProduct = (user, values) => {
+ const removeProduct = (user, values) => {
     return new Promise((resolve, reject) => {
         query('DELETE FROM ShoppingCart WHERE MemberID =? and ProductID =?', [user.id, values.productID]).then((result) => {
             resolve({

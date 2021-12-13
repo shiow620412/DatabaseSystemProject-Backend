@@ -38,6 +38,7 @@ import query from '../database/basic.database.js';
  * @param  {number} values.orderStatus
  * @param  {number} values.paymentMethod
  * @param  {number[]} values.productID
+ * @param  {string[]} values.productName
  */
  const createOrder = (user, values) => {
     let total = 0;
@@ -46,7 +47,7 @@ import query from '../database/basic.database.js';
     });
     return new Promise((resolve,reject) => {
         query('INSERT INTO `Order` (`MemberID`,`Date`, `Total`, `OrderStatus`, `PaymentMethod`) VALUES (?, ?, ?, ?, ?)',
-            [user.id, values.date, total, values.orderStatus, values.paymentMethod]).then((result) => {
+            [user.id, values.date, total, values.orderStatus, 3]).then((result) => {
                 const orderId = result.insertId;
                 let sql = 'INSERT INTO `OrderDetail` (`OrderID`,`ProductID`, `Quantity`) values';
                 const parameterBracket = [];

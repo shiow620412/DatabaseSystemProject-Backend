@@ -3,9 +3,8 @@ import JWT from "jsonwebtoken";
 import config from "../../config/config.js";
 import httpStatus from "http-status";
 import checkAdminByUserID from "../database/member.database.js";
+import checkStockByProductID from "../database/product.database.js";
 import error from "./error.js";
-
-
 
 function verifyToken(req, res, next){
     const bearerHeader = req.headers.authorization;
@@ -77,12 +76,23 @@ function checkAdmin(req, res, next){
     }).catch((_error) => {next(error.MySQLError(_error))});
     
 }
-
-
+ 
+function checkStock(req, res, next){
+    checkStockByProductID(req.body).then((result)=>{
+        if(result === true){
+            next();
+        }else{
+            res.status(403).send({
+                code:403,
+                message:httpStatus[403]
+            })
+        }
+    }).catch((_error) => {next(error.MySQLError(_error))});
+}
 
 export default {
     verifyToken,
     outputError,
     checkAdmin,
-    
+    checkStock
 };

@@ -1,7 +1,3 @@
-//import apiError from "../helper/apiError.js";
-import mysql from "mysql8"
-import config from "../../config/config.js";
-import error from "../helper/error.js";
 import query from "./basic.database.js";
 
 function checkAdminByUserID(userID){
