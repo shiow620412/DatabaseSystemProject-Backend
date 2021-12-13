@@ -1,8 +1,7 @@
 import productModule from "../module/product.module.js";
 
 const getProducts = (req, res, next) => {
-  // console.log(typeof req.query["page"])
-  productModule.getProducts(req.query["page"]).then((result) => {
+  productModule.getProducts(req.query["page"],req.query["price"],req.query["stock"],req.query["id"],req.query["sales"]).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
