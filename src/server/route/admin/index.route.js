@@ -1,20 +1,27 @@
+
 import express from "express";
 import order from "./order.route.js"
 import product from "./product.route.js"
 import user from "./user.route.js"
-import cart from "./cart.route.js"
-import admin from "./admin/index.route.js"
+import img from "./img.route.js"
+import middleware from "../../helper/middleware.js";
 const router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('admin', { title: 'Express' });
 });
-
+router.use(middleware.verifyToken)
+router.use(middleware.checkAdmin)
 router.use("/orders",order);
 router.use("/products",product);
-router.use("/user",user);
-router.use("/cart",cart);
-router.use("/admin",admin);
+router.use("/users",user);
+router.use("/img",img);
+
 
 export default router;
+
+
+
+
+

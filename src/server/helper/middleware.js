@@ -2,7 +2,9 @@
 import JWT from "jsonwebtoken";
 import config from "../../config/config.js";
 import httpStatus from "http-status";
-
+import checkAdminByUserID from "../database/member.database.js";
+import checkStockByProductID from "../database/product.database.js";
+import error from "./error.js";
 
 function verifyToken(req, res, next){
     const bearerHeader = req.headers.authorization;
@@ -34,8 +36,6 @@ function verifyToken(req, res, next){
     }
 };
 
-
-
 function outputError(err, req, res, next){
     if (err.sql){
         res.status(err.status).json({
@@ -45,17 +45,54 @@ function outputError(err, req, res, next){
             stack: config.env === 'development' ? err.stack : {}
         });
     }else{
-        res.status(err.status).json({
-            message: err.isPublic ? err.message : httpStatus[err.status],
-            code: err.code ? err.code : httpStatus[err.status],
-            stack: config.env === 'development' ? err.stack : {}
-        });
+        if(err.status){
+            res.status(err.status).json({
+                message: err.isPublic ? err.message : httpStatus[err.status],
+                code: err.code ? err.code : httpStatus[err.status],
+                stack: config.env === 'development' ? err.stack : {}
+            });
+        }else{
+            res.status(500).json({
+                message: err.message,
+                code: 500,
+                stack: config.env === 'development' ? err.stack : {}
+            })
+        }
+       
     }
     
 }
 
+function checkAdmin(req, res, next){
+    checkAdminByUserID(req.user.id).then((result)=>{
+        if(result === true){
+            next();
+        }else{
+            res.status(403).send({
+                code:403,
+                message:httpStatus[403]
+            })
+        }
+    }).catch((_error) => {next(error.MySQLError(_error))});
+    
+}
+ 
+function checkStock(req, res, next){
+    checkStockByProductID(req.body).then((result)=>{
+        if(result === true){
+            next();
+        }else{
+            res.status(403).send({
+                code:403,
+                message:httpStatus[403]
+            })
+        }
+    }).catch((_error) => {next(error.MySQLError(_error))});
+}
 
 export default {
     verifyToken,
-    outputError
+    outputError,
+    checkAdmin,
+    checkStock
 };

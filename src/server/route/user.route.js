@@ -1,34 +1,33 @@
 import userController from "../controller/user.controller.js";
 import express from "express";
+import middleware from "../helper/middleware.js";
 
 
 const router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
-router.post('/register', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+//註冊會員
+router.post('/register', userController.userRegister);
+
+//會員登入
 router.post('/login', userController.userLogin ); 
 
-router.get('/findPassword', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+//TODO:
+//暫時不用
+router.get('/findPassword', userController.findPassword ); 
 
-router.post('/buy', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
-router.post('/cart', function(req, res, next) {
-    res.send(req.method+" "+req.originalUrl);
-});
+//改密碼
+router.put('/password', middleware.verifyToken, userController.modifyPassword );
+
+//改個資
+router.put('/information', middleware.verifyToken, userController.modifyInformation );
+
+//新增信用卡
+router.post('/creditCard', middleware.verifyToken, userController.addCreditCard );
+
+//查詢信用卡
+router.get('/creditCard', middleware.verifyToken, userController.findCreditCard );
+
+//刪除信用卡
+router.delete('/creditCard',middleware.verifyToken,userController.deleteCreditCard );
 
 export default router;
-
-
-
-
-
-
-
