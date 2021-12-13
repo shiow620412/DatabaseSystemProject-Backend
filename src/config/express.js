@@ -5,7 +5,7 @@ import logger from "morgan"
 import indexRouter from "../server/route/index.route.js"
 import middlewareService from "../server/helper/middleware.js";
 import cors from "cors"
-
+import history from "connect-history-api-fallback"
 const app = express();
 
 app.use(logger('dev'));
@@ -13,7 +13,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
+app.use(history());
 app.use(express.static(path.join(path.resolve(), 'public')));
+
 app.use('/api', indexRouter);
 app.use(middlewareService.outputError);
 
