@@ -16,4 +16,44 @@ async function checkStockByProductID(product){
     })
 }
 
-export default checkStockByProductID;
+/**
+ * @param  {string} getProductsSql
+ * @param  {object} filterOptions
+ * @param  {string} filterOptions.filter
+ * @param  {string} filterOptions.sort
+ * @param  {Number} filterOptions.minPrice
+ * @param  {Number} filterOptions.maxPrice
+ * @param  {Number} filterOptions.page
+ */
+function filterProducts(getProductsSql, filterOptions){
+    const expectFilter = ["sales", "stock", "id"]
+    const expectSort = ["DESC", "ASC"]
+    let sql = getProductsSql;
+    let orderBy = []
+    if(filterOptions.filter && expectFilter.indexOf(filterOptions.filter.toLocaleLowerCase()) !== -1){        
+        orderBy.push(filterOptions.filter + " DESC");
+    }
+    if(filterOptions.sort && expectSort.indexOf(filterOptions.filter.toLocaleLowerCase()) !== -1){
+        orderBy.push("Price " + filterOptions.sort);
+    }
+    if(filterOptions.minPrice && !Number.isNaN(filterOptions.minPrice)){
+        sql += ` AND Price >= ${filterOptions.minPrice}`;
+    }
+    if(filterOptions.minPrice && !Number.isNaN(filterOptions.minPrice)){
+        sql += ` AND Price <= ${filterOptions.maxPrice}`;
+    }
+
+    if(orderBy.length > 0 ){
+        sql += "ORDER BY " + orderBy.join(",");
+    }
+
+    query(sql).then((result) => {
+        //....
+    });
+
+}
+
+export default {
+    checkStockByProductID,
+    filterProducts   
+}

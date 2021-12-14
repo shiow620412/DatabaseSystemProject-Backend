@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : project
+ Source Server         : test
  Source Server Type    : MySQL
  Source Server Version : 80027
  Source Host           : localhost:3306
@@ -11,7 +11,7 @@
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 07/12/2021 14:20:36
+ Date: 14/12/2021 22:40:52
 */
 
 SET NAMES utf8mb4;
@@ -35,6 +35,21 @@ CREATE TABLE `CreditCard` (
 -- Records of CreditCard
 -- ----------------------------
 BEGIN;
+INSERT INTO `CreditCard` VALUES ('1234567890123457', 1, 2021, 12, 123);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for IMG
+-- ----------------------------
+DROP TABLE IF EXISTS `IMG`;
+CREATE TABLE `IMG` (
+  `img` blob
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of IMG
+-- ----------------------------
+BEGIN;
 COMMIT;
 
 -- ----------------------------
@@ -48,16 +63,19 @@ CREATE TABLE `Member` (
   `Account` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `Password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `Address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `Phone` varchar(255) DEFAULT NULL,
   `IsAdmin` int NOT NULL,
   `isBan` int NOT NULL,
   PRIMARY KEY (`MemberID`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of Member
 -- ----------------------------
 BEGIN;
-INSERT INTO `Member` VALUES (1, 'admin@test.com', 'administrator', 'admin', 'staff', NULL, 1, 0);
+INSERT INTO `Member` VALUES (1, '123', 'admin', 'admin', 'staff', '123', '123', 1, 0);
+INSERT INTO `Member` VALUES (2, '123@gmail.com', '123', 'tim1207', 'tim1207', '123', NULL, 0, 1);
+INSERT INTO `Member` VALUES (5, 'test123@gmail.com', 'test123', 'test123', '123', '', '', 0, 0);
 COMMIT;
 
 -- ----------------------------
@@ -78,13 +96,20 @@ CREATE TABLE `Order` (
   CONSTRAINT `order_ibfk_1` FOREIGN KEY (`MemberID`) REFERENCES `Member` (`MemberID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `order_ibfk_2` FOREIGN KEY (`OrderStatus`) REFERENCES `OrderStatus` (`OrderStatusID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `order_ibfk_3` FOREIGN KEY (`PaymentMethod`) REFERENCES `Payment` (`PaymentID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of Order
 -- ----------------------------
 BEGIN;
-INSERT INTO `Order` VALUES (1, 1, '2021-12-03 06:18:09', 5020, 1, 1);
+INSERT INTO `Order` VALUES (1, 1, '2021-12-08 16:48:33', 5020, 2, 1);
+INSERT INTO `Order` VALUES (2, 2, '2021-12-04 11:10:10', 50, 1, 1);
+INSERT INTO `Order` VALUES (3, 2, '2021-12-04 11:10:10', 50, 1, 1);
+INSERT INTO `Order` VALUES (4, 2, '2021-12-04 11:10:10', 50, 1, 1);
+INSERT INTO `Order` VALUES (5, 2, '2021-12-04 11:10:10', 50, 1, 1);
+INSERT INTO `Order` VALUES (6, 2, '2021-12-04 11:10:10', 50, 1, 1);
+INSERT INTO `Order` VALUES (7, 1, '2021-12-14 04:08:18', 200, 2, 1);
+INSERT INTO `Order` VALUES (11, 1, '2021-12-04 11:10:10', 50, 3, 1);
 COMMIT;
 
 -- ----------------------------
@@ -108,6 +133,16 @@ BEGIN;
 INSERT INTO `OrderDetail` VALUES (1, 1, 1);
 INSERT INTO `OrderDetail` VALUES (1, 2, 1);
 INSERT INTO `OrderDetail` VALUES (1, 3, 1);
+INSERT INTO `OrderDetail` VALUES (4, 1, 3);
+INSERT INTO `OrderDetail` VALUES (4, 2, 2);
+INSERT INTO `OrderDetail` VALUES (5, 1, 3);
+INSERT INTO `OrderDetail` VALUES (5, 2, 2);
+INSERT INTO `OrderDetail` VALUES (6, 1, 3);
+INSERT INTO `OrderDetail` VALUES (6, 2, 2);
+INSERT INTO `OrderDetail` VALUES (7, 4, 10);
+INSERT INTO `OrderDetail` VALUES (7, 5, 10);
+INSERT INTO `OrderDetail` VALUES (11, 1, 3);
+INSERT INTO `OrderDetail` VALUES (11, 2, 2);
 COMMIT;
 
 -- ----------------------------
@@ -170,13 +205,13 @@ CREATE TABLE `Product` (
 -- Records of Product
 -- ----------------------------
 BEGIN;
-INSERT INTO `Product` VALUES (1, 'banana', 10, '123', 'good to eat', 0, 1, 10, 'Yes');
-INSERT INTO `Product` VALUES (2, 'apple', 10, '123', 'good to eat', 0, 1, 10, 'Yes');
-INSERT INTO `Product` VALUES (3, 'Airpods', 5000, '123', 'good', 0, 3, 10, 'Yes');
-INSERT INTO `Product` VALUES (4, '巧克力', 100, '123', 'good', 0, 2, 10, 'Yes');
-INSERT INTO `Product` VALUES (5, '哇沙米脆豌豆151g', 57, '123', 'good', 0, 2, 10, 'Yes');
+INSERT INTO `Product` VALUES (1, 'banana', 10, '123', 'good to eat', 14, 1, 90, 'No');
+INSERT INTO `Product` VALUES (2, 'apple', 10, '123', 'good to eat', 8, 1, 5, 'Yes');
+INSERT INTO `Product` VALUES (3, 'Airpods', 5000, '123', 'good', 0, 3, 13, 'Yes');
+INSERT INTO `Product` VALUES (4, '巧克力', 100, '123', 'good', 17, 2, 20, 'Yes');
+INSERT INTO `Product` VALUES (5, '哇沙米脆豌豆151g', 57, '123', 'good', 10, 2, 20, 'Yes');
 INSERT INTO `Product` VALUES (6, 'IPHONE 13藍256G  MLQA3TA/A 【全國電子】', 29400, '123', 'good', 0, 1, 10, 'Yes');
-INSERT INTO `Product` VALUES (7, '【孩之寶 hasbro】粉紅豬小妹 佩佩的遊樂場遊戲組 F24025L00', 1199, '123', 'good', 0, 1, 10, 'Yes');
+INSERT INTO `Product` VALUES (7, '【孩之寶 hasbro】粉紅豬小妹 佩佩的遊樂場遊戲組 F24025L00', 1199, '123', 'good', 0, 1, 0, 'Yes');
 INSERT INTO `Product` VALUES (8, '【獨立包裝】口罩KF94韓版氧化銅離子滅活口罩 四層含熔噴布 魚嘴柳葉折疊口罩  KF94口罩 立體口罩 10只/包', 1, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (9, '台灣優紙 成人3D立體醫療口罩 耳繩 耳掛 (未滅菌) 立體口罩 25片盒裝 口罩 醫療口罩 醫用口罩 優紙 成人口罩', 150, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (10, '衛龍辣條 魔芋爽 4元 親嘴燒 3元 小麵筋 魔芋爽盒裝 大麵筋 魔芋爽批發 風吃海帶 小辣棒 大辣棒 卫龙 辣条 零食', 3, '123', 'good', 0, 1, 10, 'Yes');
@@ -235,7 +270,7 @@ INSERT INTO `Product` VALUES (62, '【如意 齋零 嘴屋】衛龍辣條系列�
 INSERT INTO `Product` VALUES (63, '韓國 orion 好麗友 預感香烤洋芋片 12入 超值量販包 原味/起司/洋蔥 非油炸烘烤 現貨 蝦皮直送', 109, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (64, '🔥拚全台最低價🔥 高彈力麵包拖鞋 厚底拖鞋 增高拖鞋 防水 止滑 厚底 柔軟 耐磨 室內拖鞋  居家拖鞋 EVA輕量拖', 69, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (65, '魔芋爽盒裝 大包 魔芋爽 3元 魔芋爽小龍蝦 4元 素毛肚 魔芋爽批發 18g 現貨 風吃海帶 盒裝 衛龍 辣條 親嘴燒', 3, '123', 'good', 0, 1, 10, 'Yes');
-INSERT INTO `Product` VALUES (66, 'APPLE iPhone 13 128G 新機預購 送門市現場保貼服務兌換券 神腦生活', 25900, '123', 'good', 0, 1, 10, 'Yes');
+INSERT INTO `Product` VALUES (66, 'APPLE iPhone 13 128G 新機預購 送門市現場保貼服務兌換券 神腦生活', 25900, '123', 'good', 0, 2, 10, 'Yes');
 INSERT INTO `Product` VALUES (67, 'MYUMYU★大減價虧本賣50%off 清倉、樣品、瑕疵、孤品、色差  居家飾品抱枕小桌子特價商品碗盤杯子小置物架', 60, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (68, 'ONE DAY 台灣製 260 素色大學T 男生長袖T恤 大學T恤 刷毛T 大學T', 220, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (69, 'QUEENSHOP_ F  基本圓領寬鬆百搭素面大學T 五色售    現+預【01110580】', 470, '123', 'good', 0, 1, 10, 'Yes');
@@ -278,7 +313,7 @@ INSERT INTO `Product` VALUES (105, '台灣現貨 日韓美肌褲襪 絨毛柔膚
 INSERT INTO `Product` VALUES (106, '（火速出貨）台灣製 郡昱莫蘭迪口罩 奶茶色口罩 網紅最愛配色❤️ 快速出貨親子款口罩 莫蘭迪系列/網美最愛', 101, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (107, '刷毛連帽印花大學T 情侶裝流行刷毛款男潮版港風寬鬆版 帽T 大學T 印花T 長T（SKS963）【壹號站】', 198, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (108, '【現貨免運】韓國襪子 基本款素色襪 快速出貨 正韓少女襪 男襪 中筒襪長襪 韓襪韓國襪船型襪短襪棉襪 韓妞必備 哈囉喬伊', 35, '123', 'good', 0, 1, 10, 'Yes');
-INSERT INTO `Product` VALUES (109, '【贈品賣場】THE LOEL 維他命C蓮蓬頭濾芯單入裝', 499999, '123', 'good', 0, 1, 10, 'Yes');
+INSERT INTO `Product` VALUES (109, '【贈品賣場】THE LOEL 維他命C蓮蓬頭濾芯單入裝', 32900, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (110, '【官方正品】✨爆款洗面乳 茵刷頭 洗面乳120mL✨控油 除螨 清潔 氨基酸洗面乳 溫和不刺激 不緊繃', 78, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (111, '【DIFF】韓版彈性修身高領保暖素色針織上衣 長袖上衣 衣服 毛衣 針織毛衣 高領上衣 保暖上衣內搭 打底衣【W142】', 119, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (112, '魔芋爽 4元 衛龍辣條【買10送1】大麵筋 小麵筋 大辣棒 親嘴燒 素毛肚脆辣海帶 火藥辣條 親嘴豆皮', 1, '123', 'good', 0, 1, 10, 'Yes');
@@ -355,8 +390,8 @@ INSERT INTO `Product` VALUES (182, '【可信用卡】陸版抖音 30000抖幣 �
 INSERT INTO `Product` VALUES (183, '【DIFF】韓版復古寬鬆直筒高腰牛仔褲 寬褲 褲子 長褲 休閒褲 女裝 工裝褲 女裝 黑褲【P102】', 199, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (184, '連帽衛衣 大學T韓系加絨原宿BF風學生寬鬆長袖上衣女生帽T春秋薄款連帽衛衣女韓版ins寬鬆套頭慵懶', 199, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (185, '@TT旗艦店 刷毛帽t 連帽衛衣 男生帽T 大學T  月球衣服 休閒寬鬆百搭上衣帥氣潮牌宇航員體恤衫韓版五分袖(306)', 145, '123', 'good', 0, 1, 10, 'Yes');
-INSERT INTO `Product` VALUES (186, '蘋果apple watch 4錶帶1/2/3手錶錶帶女金屬42mm/38 7代 iwatch4錶帶', 249, '123', 'good', 0, 1, 10, 'Yes');
-INSERT INTO `Product` VALUES (187, 'APPLE iPhone 13 Pro 128G 新機預購 送門市現場保貼服務兌換券 神腦生活', 32900, '123', 'good', 0, 1, 10, 'Yes');
+INSERT INTO `Product` VALUES (186, '蘋果apple watch 4錶帶1/2/3手錶錶帶女金屬42mm/38 7代 iwatch4錶帶', 249, '123', 'good', 0, 2, 10, 'Yes');
+INSERT INTO `Product` VALUES (187, 'APPLE iPhone 13 Pro 128G 新機預購 送門市現場保貼服務兌換券 神腦生活', 32900, '123', 'good', 0, 2, 10, 'Yes');
 INSERT INTO `Product` VALUES (188, '25款 小米手環 5 4 3 錶帶 印花卡通矽膠腕帶 親膚防水 小米手環NFC版 適用小米手環3 小米手環4 小米手環5', 39, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (189, '💓 凱馺💓 全彩成人醫用口罩💓MD鋼印💓台灣製【好鄰居藥局】', 109, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (190, '【高級質感】莫蘭迪色 韓版KF94  漸層魚型口罩 3D立體口罩 四層漸變口罩成人口罩 彩色口罩 印花口罩 魚嘴口罩', 1, '123', 'good', 0, 1, 10, 'Yes');
@@ -365,8 +400,8 @@ INSERT INTO `Product` VALUES (192, '【最新2021 M1可用 】Adobe全套 設計
 INSERT INTO `Product` VALUES (193, '【買到戀愛】兩色美式印花圓領大學T 【FM3097】', 169, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (194, '聖誕髮飾鹿角發箍仙女森系超仙聖誕發卡少女可愛小鹿耳朵頭箍裝扮髮飾', 7, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (195, '【盛籐 天心】★莫蘭迪★乾燥色★漸層★多款★熱門★台灣製★成人口罩★醫療口罩★盛藤', 99, '123', 'good', 0, 1, 10, 'Yes');
-INSERT INTO `Product` VALUES (196, '手錶保護殼 適用於Apple Watch 7代 4 5 6 SE 蘋果手錶PC硬殼+滿版保護貼 41m 44mm 45m', 77, '123', 'good', 0, 1, 10, 'Yes');
-INSERT INTO `Product` VALUES (197, '台灣現貨原廠公司貨 apple AirPods2 耳機 airpodsPro 3代 無線藍芽耳機 入耳檢測 藍牙耳機', 495, '123', 'good', 0, 1, 10, 'Yes');
+INSERT INTO `Product` VALUES (196, '手錶保護殼 適用於Apple Watch 7代 4 5 6 SE 蘋果手錶PC硬殼+滿版保護貼 41m 44mm 45m', 77, '123', 'good', 0, 2, 10, 'Yes');
+INSERT INTO `Product` VALUES (197, '台灣現貨原廠公司貨 apple AirPods2 耳機 airpodsPro 3代 無線藍芽耳機 入耳檢測 藍牙耳機', 495, '123', 'good', 0, 2, 10, 'Yes');
 INSERT INTO `Product` VALUES (198, '🔥現貨🔥【大成】立體口罩 4D口罩 醫用口罩20入 韓版口罩 KF94口罩 魚口口罩 MIT 雙鋼印', 140, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (199, '摩升衛浴 德國系電鍍黑浴室浴缸龍頭大流量瀑布出水花灑套裝全銅黑色浴缸邊花灑龍頭', 2625, '123', 'good', 0, 1, 10, 'Yes');
 INSERT INTO `Product` VALUES (200, 'QUEENSHOP_ F  基本多色前短後長開衩長袖上衣 五色售  現+預【01039103】', 310, '123', 'good', 0, 1, 10, 'Yes');
@@ -435,6 +470,7 @@ CREATE TABLE `ShoppingCart` (
 -- Records of ShoppingCart
 -- ----------------------------
 BEGIN;
+INSERT INTO `ShoppingCart` VALUES (1, 1, 3);
 COMMIT;
 
 -- ----------------------------
