@@ -7,7 +7,8 @@ const connectionPool = mysql.createPool({
     host: config.mysqlHost,
     user: config.mysqlUserName,
     password: config.mysqlPass,
-    database: config.mysqlDatabase
+    database: config.mysqlDatabase,
+    port: config.mysqlPort
 });
 function query(queryString, queryParameter){
     return new Promise( (resolve, reject) => {

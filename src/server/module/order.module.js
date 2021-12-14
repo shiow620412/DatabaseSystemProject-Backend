@@ -47,7 +47,7 @@ import query from '../database/basic.database.js';
     });
     return new Promise((resolve,reject) => {
         query('INSERT INTO `Order` (`MemberID`,`Date`, `Total`, `OrderStatus`, `PaymentMethod`) VALUES (?, ?, ?, ?, ?)',
-            [user.id, values.date, total, values.orderStatus, 3]).then((result) => {
+            [user.id, values.date, total, 3,values.paymentMethod]).then((result) => {
                 const orderId = result.insertId;
                 let sql = 'INSERT INTO `OrderDetail` (`OrderID`,`ProductID`, `Quantity`) values';
                 const parameterBracket = [];
@@ -93,10 +93,11 @@ const deleteOrder = (user,id) =>{
  * @param  {object} user
  * @param  {string} user.id
  */
+// TODO: 需join orderStatus
 const checkOrderDetail = (user,id) =>{
     return new Promise((resolve,reject) => { 
-        query('SELECT O.OrderID ,O.MemberID,O.Date,O.OrderStatus,D.ProductID,D.Quantity FROM `Order` AS O LEFT JOIN OrderDetail AS D on O.OrderID=D.OrderID WHERE O.OrderID =? AND O.MemberID =?', 
-        [id,user.id]).then((result) => {
+        query('SELECT DISTINCT Product.ProductName,OrderDetail.Quantity FROM OrderDetail ,Product,`Order` WHERE OrderDetail.ProductID = Product.ProductID  and Order.MemberID=? AND OrderDetail.OrderID =? ', 
+        [user.id,id]).then((result) => {
             resolve(result);
         }).catch((error) => {reject(error);})
     })    
