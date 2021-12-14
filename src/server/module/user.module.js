@@ -74,9 +74,17 @@ const Register = (values) => {
                 let address="";
                 query('INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `Address`,`Phone`, `IsAdmin`, `isBan`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                     [values.email, values.name, values.account, values.password, address, phone,  0 , 0]).then((result) => {
+                        const payload = {
+                            user_id: result.insertId,
+                            user_name: values.name,
+                            user_mail: values.email
+                        };
+                        const token = jwt.sign({ payload, exp: Math.floor(Date.now() / 1000) + (86400 * 365) }, config.secretKey);
+
                         resolve({ 
                             code: 200,
-                            message: '註冊成功', 
+                            message: '註冊成功',
+                            token 
                         });  
                     }).catch((error) => {reject(error);})
             } else {
