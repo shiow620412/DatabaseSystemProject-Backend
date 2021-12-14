@@ -19,5 +19,4 @@ router.get("/sales",productController.rankProductBySales);
 //查詢name in type 商品有多少
 router.get("/search/category",productController.countProductByCategory);
 
-
 export default router;
