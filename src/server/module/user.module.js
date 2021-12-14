@@ -124,7 +124,7 @@ const findCreditCard =(user,page)=>{
         if(page===undefined)
             page=1
         let minLimit=(Number(page)-1)*50  
-        query('SELECT * FROM `CreditCard` WHERE `MemberID` = ?  LIMIT ?,?', [user.id, minLimit, 50]).then((result) => {
+        query('SELECT CreditCardNumber,ExpireYear,ExpireMonth,SecurityCode FROM `CreditCard` WHERE `MemberID` =?  LIMIT ?,?', [user.id, minLimit, 50]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);});
     }) 

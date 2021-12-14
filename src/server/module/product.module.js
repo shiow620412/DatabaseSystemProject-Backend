@@ -10,7 +10,7 @@ import query from '../database/basic.database.js';
         query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE Type.TypeID = ? AND OnShelf = "Yes" ',[type]).then((result)=>{
             count = Number(result[0]._count);
             let numOfPage = Math.ceil(count/20);
-            query('SELECT ProductName,Price,Sales,Stock,TypeName,Description FROM Product LEFT JOIN Type on Product.Type = Type.TypeID WHERE Product.Type = ? AND OnShelf = "Yes" LIMIT ?,?', [type,minLimit,20]).then((result) => {
+            query('SELECT Thumbnail,ProductName,Price,ProductID FROM Product  WHERE Product.Type = ? AND OnShelf = "Yes" LIMIT ?,?', [type,minLimit,20]).then((result) => {
                 resolve({ 
                     result,
                     count,
@@ -119,7 +119,7 @@ const searchProductByName = (productName, page) => {
         query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ? AND OnShelf = "Yes" ',[`%${productName}%`]).then((result)=>{
             count = Number(result[0]._count);
             let numOfPage = Math.ceil(count/20);
-            query('SELECT ProductName,Price,Sales,Stock,TypeName,Description FROM Product LEFT JOIN Type on Product.Type = Type.TypeID WHERE ProductName Like ? AND OnShelf = "Yes" LIMIT ?,?', [`%${productName}%`,minLimit,20]).then((result) => {
+            query('SELECT Thumbnail ,ProductName,Price,ProductID FROM Product WHERE ProductName Like ? AND OnShelf = "Yes" LIMIT ?,?', [`%${productName}%`,minLimit,20]).then((result) => {
                 resolve({ 
                     result,
                     count,
@@ -133,7 +133,7 @@ const searchProductByName = (productName, page) => {
 const getProductDetail = (id) => {
     console.log(id)
     return new Promise((resolve,reject) => {
-        query('SELECT * FROM `Product` WHERE ProductID = ?',[id]).then((result) => {
+        query('SELECT Thumbnail ,ProductName,Price,Stock,Description FROM `Product` WHERE ProductID = ?',[id]).then((result) => {
             resolve(result)
         }).catch((error) => {reject(error);})             
     });
@@ -141,7 +141,7 @@ const getProductDetail = (id) => {
 
 const rankProductBySales = () => {
     return new Promise((resolve,reject) => {
-        query('SELECT * FROM `Product` ORDER BY Sales DESC',).then((result) => {
+        query('SELECT Thumbnail,ProductName,Price,ProductID FROM `Product` ORDER BY Sales DESC',).then((result) => {
             resolve(result)
         }).catch((error) => {reject(error);})             
     });

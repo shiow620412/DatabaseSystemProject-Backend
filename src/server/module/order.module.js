@@ -14,7 +14,7 @@ import query from '../database/basic.database.js';
         query('SELECT COUNT(*) as _count FROM `Order` WHERE MemberID = ? ',[user.id]).then((result)=>{
             count = Number(result[0]._count);
             let numOfPage = Math.ceil(count/20);
-            query('SELECT * FROM `Order` WHERE MemberID = ? LIMIT ?,?', [user.id, minLimit, 20]).then((result) => {
+            query('SELECT OrderID,Date,Total,StatusType FROM `Order` ,Payment,OrderStatus WHERE MemberID = ? and `Order`.OrderStatus = OrderStatus.OrderStatusID and `Order`.PaymentMethod = Payment.PaymentID  LIMIT ?,?', [user.id, minLimit, 20]).then((result) => {
                 resolve({ 
                     result,
                     count,
