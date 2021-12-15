@@ -42,11 +42,20 @@ import query from '../database/basic.database.js';
  */
  const createOrder = (user, values) => {
     let total = 0;
-    values.price.forEach((num, index) => {
-        total += (values.price[index]) * (values.quantity[index]);
+    values.productID.forEach((value, index) => {
+        query('SELECT Price FROM `Product` WHERE ProductID = ?', value).then(async(result) => {
+            total += Number(result[0].Price) * values.quantity[index];
+            console.log(result);
+            console.log(total);
+            callback(total);
+        })
     });
+    // let total = 0;
+    // values.price.forEach((num, index) => {
+    //     total += (values.price[index]) * (values.quantity[index]);
+    // });
     return new Promise((resolve,reject) => {
-        query('INSERT INTO `Order` (`MemberID`,`Date`, `Total`, `OrderStatus`, `PaymentMethod`) VALUES (?, ?, ?, ?, ?)',
+         query('INSERT INTO `Order` (`MemberID`,`Date`, `Total`, `OrderStatus`, `PaymentMethod`) VALUES (?, ?, ?, ?, ?)',
             [user.id, values.date, total, 3,values.paymentMethod]).then((result) => {
                 const orderId = result.insertId;
                 let sql = 'INSERT INTO `OrderDetail` (`OrderID`,`ProductID`, `Quantity`) values';
