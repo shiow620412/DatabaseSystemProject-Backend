@@ -40,14 +40,28 @@ import query from '../database/basic.database.js';
  * @param  {number[]} values.productID
  * @param  {string[]} values.productName
  */
- const createOrder = (user, values) => {
+ const createOrder = async(user, values) => {
     let total = 0;
-    values.price.forEach((num, index) => {
-        total += (values.price[index]) * (values.quantity[index]);
-    });
+    let count = 0;
+    let totalPrice = await new Promise((resolve,reject) => {
+        values.productID.forEach((value, index) => {
+            query('SELECT Price FROM `Product` WHERE ProductID = ?', value).then(async(result) => {
+                total += Number(result[0].Price) * values.quantity[index];
+                count++;
+                if(count===(values.productID.length)){
+                    resolve(total);
+                }
+            }).catch((error) => {reject(error);});
+        });
+    })
+    console.log(totalPrice);
+    // let total = 0;
+    // values.price.forEach((num, index) => {
+    //     total += (values.price[index]) * (values.quantity[index]);
+    // });
     return new Promise((resolve,reject) => {
         query('INSERT INTO `Order` (`MemberID`,`Date`, `Total`, `OrderStatus`, `PaymentMethod`) VALUES (?, ?, ?, ?, ?)',
-            [user.id, values.date, total, 3,values.paymentMethod]).then((result) => {
+            [user.id, values.date, totalPrice, 3,values.paymentMethod]).then((result) => {
                 const orderId = result.insertId;
                 let sql = 'INSERT INTO `OrderDetail` (`OrderID`,`ProductID`, `Quantity`) values';
                 const parameterBracket = [];

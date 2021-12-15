@@ -79,7 +79,7 @@ function checkAdmin(req, res, next){
 }
  
 function checkStock(req, res, next){
-    checkStockByProductID(req.body).then((result)=>{
+    checkStockByProductID.checkStockByProductID(req.body).then((result)=>{
         if(result === true){
             next();
         }else{

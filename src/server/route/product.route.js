@@ -8,7 +8,7 @@ router.get('/categories/:type', productController.getProducts );
 
 //查詢各類別商品
 // localhost:3000/api/products/search/categories?productName= & page=
-router.get('/search/categories', productController.searchProduct ); 
+router.get('/search/categories', productController.searchProductByName ); 
 
 //用名字搜尋總類別
 //localhost:3000/api/products/search?productName= & page=
