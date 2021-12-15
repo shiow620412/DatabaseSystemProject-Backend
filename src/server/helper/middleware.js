@@ -54,9 +54,9 @@ function outputError(err, req, res, next){
             });
         }else{
             res.status(500).json({
-                message: err.isDev ? err.message : httpStatus[500],
+                message: config.env === "development" ? err.message : httpStatus[500],
                 code: 500,
-                stack: err.isDev ? stack : undefined
+                stack: config.env === "development" ? stack : undefined
             })
         }
        
