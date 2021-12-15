@@ -1,27 +1,5 @@
 import query from '../database/basic.database.js';
 
-/** Admin hit the product on the shelf */
-/**
- * @param  {object} product
- * @param  {string} product.name
- * @param  {string} product.price
- * @param  {string} product.thumbnail
- * @param  {string} product.description
- * @param  {string} product.type
- * @param  {string} product.stock
- */
-const addProduct = (product) => {
-    return new Promise((resolve,reject) => {
-        query('INSERT INTO `Product`(`ProductName`, `Price`, `Thumbnail`, `Description`, `Sales` , `Type`, `Stock`, `OnShelf`) VALUES (?, ?, ?, ?, ?, ?, ?, ? )',
-        [product.name, product.price, product.thumbnail, product.description, 0, product.type, product.stock, "Yes"]).then((result) => {
-            resolve({
-                code: 200,
-                message: "商品上架成功",
-            })
-        }).catch((error) => {reject(error);})             
-    });
-};
-
 /** List the products on page  */
 /**
  * @param  {string} page
@@ -30,29 +8,81 @@ const getProducts = (page) => {
     return new Promise((resolve,reject) => {
         if(page===undefined)
             page=1
-        let minLimit=(Number(page)-1)*50  
-        let maxLimit=(Number(page))*50  
-        query('SELECT * FROM Product  LIMIT ?,?', [minLimit,maxLimit]).then((result) => {
-            resolve(result); 
-        }).catch((error) => {reject(error);})
+        let minLimit=(Number(page)-1)*20  
+        let count;
+        query('SELECT COUNT(*) as _count FROM Product WHERE OnShelf = "Yes" ').then((result)=>{
+            count = Number(result[0]._count);
+            let numOfPage = Math.ceil(count/20);
+            query('SELECT * FROM Product WHERE OnShelf = "Yes" LIMIT ?,?', [minLimit,20]).then((result) => {
+                resolve({ 
+                    result,
+                    count,
+                    numOfPage,
+                }); 
+            }).catch((error) => {reject(error);});
+        }).catch((error) => {reject(error);});
+        
     }) 
 };
-
 /** Search the products by name*/
 /**
  * @param  {string} productName
  */
-const searchProductByName = (productName) => {
+const searchProductByName = (productName, page) => {
     return new Promise((resolve,reject) => {
-        query('SELECT * FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ?', [`%${productName}%`]).then((result) => {
-            resolve(result); 
-        }).catch((error) => {reject(error);})
+        if(page === undefined)
+            page = 1
+        let minLimit = (Number(page)-1)*20 
+        let count;
+        query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ? AND OnShelf = "Yes" ',[`%${productName}%`,]).then((result)=>{
+            count = Number(result[0]._count);
+            let numOfPage = Math.ceil(count/20);
+            query('SELECT ProductName,Price,Stock,TypeName FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ? AND OnShelf = "Yes" LIMIT ?,?', [`%${productName}%`,minLimit,20]).then((result) => {
+                resolve({ 
+                    result,
+                    count,
+                    numOfPage,
+                }); 
+            }).catch((error) => {reject(error);});
+        }).catch((error) => {reject(error);});
     })    
+};
+
+const getProductDetail = (id) => {
+    console.log(id)
+    return new Promise((resolve,reject) => {
+        query('SELECT * FROM `Product` WHERE ProductID = ?',[id]).then((result) => {
+            resolve(result)
+        }).catch((error) => {reject(error);})             
+    });
+};
+
+const rankProductBySales = () => {
+    return new Promise((resolve,reject) => {
+        query('SELECT * FROM `Product` ORDER BY Sales DESC',).then((result) => {
+            resolve(result)
+        }).catch((error) => {reject(error);})             
+    });
+};
+
+/**
+ * @param  {string} productName
+ */
+const countProductByCategory = (productName) => {
+    return new Promise((resolve,reject) => {
+        console.log(productName)
+        query(`SELECT TypeName,count(*) as quantity FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName LIKE ? GROUP BY TypeName`,
+        [`%${productName}%`]).then((result) => {
+            resolve(result)
+        }).catch((error) => {reject(error);})             
+    });
 };
 
 export default 
 {
-    addProduct,
     getProducts,
-    searchProductByName
+    searchProductByName,
+    getProductDetail,
+    rankProductBySales,
+    countProductByCategory
 }

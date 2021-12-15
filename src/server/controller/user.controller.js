@@ -8,13 +8,6 @@ const userLogin = (req, res, next) => {
     }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
   
-const getUser = (req, res, next) => {
-  // console.log(typeof req.query["page"])
-  userModule.listUser(req.user,req.query["page"]).then((result) => {
-    res.send(result); // 成功回傳result結果
-  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
-};
-
 /* User  findPassword */
 const findPassword = (req, res, next) => {
   userModule.findBackPassword(req.body).then((result) => {
@@ -22,9 +15,44 @@ const findPassword = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+/** User register */
 const userRegister = (req, res, next) => {
-  // 新增會員帳號
   userModule.Register(req.body).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
+/** User add credit card */
+const addCreditCard = (req, res, next) => {
+  userModule.addCreditCard(req.user,req.body).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
+/** List User's credit card */
+const findCreditCard = (req, res, next) => {
+  userModule.findCreditCard(req.user,req.query["page"]).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
+/** delete User's credit card */
+const deleteCreditCard = (req, res, next) => {
+  userModule.deleteCreditCard(req.user,req.body).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
+/** modify User's information */
+const modifyInformation = (req, res, next) => {
+  userModule.modifyInformation(req.user,req.body).then((result) => {
+    res.send(result); // 成功回傳result結果
+  }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
+};
+
+/** modify User's password */
+const modifyPassword = (req, res, next) => {
+  userModule.modifyPassword(req.user,req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
@@ -32,7 +60,11 @@ const userRegister = (req, res, next) => {
 export default 
 {
   userLogin,
-  getUser,
   findPassword,
-  userRegister
+  userRegister,
+  addCreditCard,
+  findCreditCard,
+  deleteCreditCard,
+  modifyInformation,
+  modifyPassword
 }

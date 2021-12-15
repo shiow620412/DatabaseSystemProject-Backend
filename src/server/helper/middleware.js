@@ -1,4 +1,5 @@
 
+
 import JWT from "jsonwebtoken";
 import config from "../../config/config.js";
 import httpStatus from "http-status";
@@ -20,9 +21,9 @@ function verifyToken(req, res, next){
                     }); 
             }else{
                 req.user = {
-                    id: payload['payload'].user_id,
-                    name: payload['payload'].user_name,
-                    mail: payload['payload'].user_mail
+                    id: payload.user_id,
+                    name: payload.user_name,
+                    mail: payload.user_mail
                 }
                 console.log("BearerToken 解密\n"+JSON.stringify(req.user))
                 next();
@@ -47,11 +48,19 @@ function outputError(err, req, res, next){
             stack: config.env === 'development' ? err.stack : {}
         });
     }else{
-        res.status(err.status).json({
-            message: err.isPublic ? err.message : httpStatus[err.status],
-            code: err.code ? err.code : httpStatus[err.status],
-            stack: config.env === 'development' ? err.stack : {}
-        });
+        if(err.status){
+            res.status(err.status).json({
+                message: err.isPublic ? err.message : httpStatus[err.status],
+                code: err.code ? err.code : httpStatus[err.status],
+                stack: config.env === 'development' ? err.stack : {}
+            });
+        }else{
+            res.status(500).json({
+                message: err.message,
+                code: 500,
+                stack: config.env === 'development' ? err.stack : {}
+            })
+        }
     }
     
 }
@@ -75,4 +84,4 @@ export default {
     verifyToken,
     outputError,
     checkAdmin
-};
+}

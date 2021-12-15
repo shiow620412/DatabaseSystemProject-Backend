@@ -11,7 +11,7 @@
  Target Server Version : 80027
  File Encoding         : 65001
 
- Date: 03/12/2021 15:49:07
+ Date: 07/12/2021 14:20:36
 */
 
 SET NAMES utf8mb4;
@@ -49,6 +49,7 @@ CREATE TABLE `Member` (
   `Password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `Address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `IsAdmin` int NOT NULL,
+  `isBan` int NOT NULL,
   PRIMARY KEY (`MemberID`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
@@ -56,7 +57,7 @@ CREATE TABLE `Member` (
 -- Records of Member
 -- ----------------------------
 BEGIN;
-INSERT INTO `Member` VALUES (1, 'admin@test.com', 'administrator', 'admin', 'staff', NULL, 1);
+INSERT INTO `Member` VALUES (1, 'admin@test.com', 'administrator', 'admin', 'staff', NULL, 1, 0);
 COMMIT;
 
 -- ----------------------------
@@ -159,7 +160,7 @@ CREATE TABLE `Product` (
   `Sales` int NOT NULL DEFAULT '0',
   `Type` int NOT NULL,
   `Stock` int NOT NULL,
-  `OnShelf` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `OnShelf` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`ProductID`) USING BTREE,
   KEY `Type` (`Type`) USING BTREE,
   CONSTRAINT `product_ibfk_1` FOREIGN KEY (`Type`) REFERENCES `Type` (`TypeID`) ON DELETE RESTRICT ON UPDATE RESTRICT
