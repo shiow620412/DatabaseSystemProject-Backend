@@ -1,118 +1,74 @@
 import query from '../database/basic.database.js';
+import filterProducts from '../database/product.database.js'
 
-/** List the products on page  */
-/**
- * @param  {string} page
- * @param  {string} price
- * @param  {string} stock
- * @param  {string} id
- * @param  {string} sales
- */
-const getProducts = (page,price,stock,id,sales) => {
+/** List the products in type on page  */
+ /**
+  * @param  {number} type
+  * @param  {number} _page
+  * @param  {string} _filter
+  * @param  {string} _sort
+  * @param  {number} _maxPrice
+  * @param  {number} _minPrice
+  */
+const getProducts = (type, _page,_filter,_sort,_maxPrice,_minPrice) => {
     return new Promise((resolve,reject) => {
-        if(page===undefined)
-            page=1
-        let minLimit=(Number(page)-1)*20  
         let count;
-        let sqltype= price+stock+id+sales;
-        let sql = '';
-        switch(sqltype){
-            case '0000':
-                sql='Order By Price  ,Stock  ,ProductID  ,Sales ';               
-                //price低到高，stock低到高，id低到高，sales高到低
-                break;
-            case '0001':
-                sql='Order By Price  ,Stock  ,ProductID  ,Sales DESC';               
-                //price低到高，stock低到高，id低到高，sales高到低
-                break;
-            case '0010':
-                sql='Order By Price  ,Stock  ,ProductID DESC ,Sales ';
-                //price低到高，stock低到高，id高到低，sales低到高
-                break;
-            case '0011':
-                sql='Order By Price  ,Stock  ,ProductID DESC ,Sales DESC';
-                //price低到高，stock低到高，id高到低，sales高到低
-                break;
-            case '0100':
-                sql='Order By Price  ,Stock DESC ,ProductID  ,Sales ';
-                //price低到高，stock高到低，id低到高，sales低到高
-                break;
-            case '0101':
-                sql='Order By Price  ,Stock DESC ,ProductID  ,Sales DESC';
-                //price低到高，stock高到低，id低到高，sales高到低
-                break;
-            case '0110':
-                sql='Order By Price  ,Stock DESC ,ProductID DESC ,Sales ';
-                //price低到高，stock高到低，id高到低，sales低到高
-                break;
-            case '0111':
-                sql='Order By Price  ,Stock DESC ,ProductID DESC ,Sales DESC';
-                //price低到高，stock高到低，id高到低，sales高到低
-                break;
-            case '1000':
-                sql='Order By Price DESC ,Stock  ,ProductID  ,Sales ';
-                //price高到低，stock低到高，id低到高，sales低到高
-                break;
-            case '1001':
-                sql='Order By Price DESC ,Stock  ,ProductID  ,Sales DESC';
-                //price高到低，stock低到高，id低到高，sales高到低
-                break;
-            case '1010':
-                sql='Order By Price DESC ,Stock  ,ProductID DESC ,Sales ';
-                //price高到低，stock低到高，id高到低，sales低到高
-                break;
-            case '1011':
-                sql='Order By Price DESC ,Stock  ,ProductID DESC ,Sales DESC';
-                //price高到低，stock低到高，id高到低，sales高到低
-                break;
-            case '1100':
-                sql='Order By Price DESC ,Stock DESC ,ProductID  ,Sales ';
-                //price高到低，stock高到低，id低到高，sales低到高
-                break;
-            case '1101':
-                sql='Order By Price DESC ,Stock DESC ,ProductID  ,Sales DESC';
-                //price高到低，stock高到低，id低到高，sales高到低
-                break;
-            case '1111':
-                sql='Order By Price DESC ,Stock DESC ,ProductID DESC ,Sales DESC';
-                //price高到低，stock高到低，id高到低，sales高到低
-                break;
-        }
-        console.log(sql);
-        query('SELECT COUNT(*) as _count FROM Product WHERE OnShelf = "Yes" ',).then((result)=>{
+
+        const filterOptions={
+            filter:_filter,
+            sort:_sort,
+            minPrice:_minPrice,
+            maxPrice:_maxPrice,
+            page:_page
+        }       
+        query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE Type.TypeID = ? AND OnShelf = "Yes" ',[type]).then(async (result)=>{
+
             count = Number(result[0]._count);
             let numOfPage = Math.ceil(count/20);
-            query('SELECT ProductName,Price,Sales,Stock,TypeName,Description FROM Product LEFT JOIN Type on Product.Type = Type.TypeID WHERE OnShelf = "Yes" '+sql+ ' LIMIT ?,?', [minLimit,20]).then((result) => {
-                resolve({ 
-                    result,
-                    count,
-                    numOfPage,
-                }); 
-            }).catch((error) => {reject(error);});
+            let getProductsSql = 'SELECT Thumbnail,ProductName,Price,ProductID FROM Product WHERE Product.Type = '+String(type)+' AND OnShelf = "Yes"';
+            let filterResult = await filterProducts.filterProducts(getProductsSql,filterOptions);
+            console.log(filterResult);
+            resolve({ 
+                filterResult,
+                count,
+                numOfPage,
+            });
         }).catch((error) => {reject(error);});
-        
-    }) 
+    })    
 };
+
 /** Search the products by name*/
 /**
- * @param  {string} productName
+  * @param  {string} productName
+  * @param  {number} _page
+  * @param  {string} _filter
+  * @param  {string} _sort
+  * @param  {number} _maxPrice
+  * @param  {number} _minPrice
  */
-const searchProductByName = (productName, page) => {
+const searchProductByName = (productName, _page,_filter,_sort,_maxPrice,_minPrice) => {
     return new Promise((resolve,reject) => {
-        if(page === undefined)
-            page = 1
-        let minLimit = (Number(page)-1)*20 
         let count;
-        query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ? AND OnShelf = "Yes" ',[`%${productName}%`,]).then((result)=>{
+        const filterOptions={
+            filter:_filter,
+            sort:_sort,
+            minPrice:_minPrice,
+            maxPrice:_maxPrice,
+            page:_page
+        }       
+        query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ? AND OnShelf = "Yes" ',[`%${productName}%`]).then(async(result)=>{
             count = Number(result[0]._count);
             let numOfPage = Math.ceil(count/20);
-            query('SELECT ProductName,Price,Sales,Stock,TypeName,Description FROM Product LEFT JOIN Type on Product.Type = Type.TypeID WHERE ProductName Like ? AND OnShelf = "Yes" LIMIT ?,?', [`%${productName}%`,minLimit,20]).then((result) => {
-                resolve({ 
-                    result,
-                    count,
-                    numOfPage,
-                }); 
-            }).catch((error) => {reject(error);});
+
+            let getProductsSql = 'SELECT Thumbnail,ProductName,Price,ProductID FROM Product WHERE ProductName Like "%'+String(productName)+'%" AND OnShelf = "Yes"';
+            let filterResult = await filterProducts.filterProducts(getProductsSql,filterOptions);
+            console.log(filterResult);
+            resolve({ 
+                filterResult,
+                count,
+                numOfPage,
+            });
+
         }).catch((error) => {reject(error);});
     })    
 };
@@ -120,17 +76,43 @@ const searchProductByName = (productName, page) => {
 const getProductDetail = (id) => {
     console.log(id)
     return new Promise((resolve,reject) => {
-        query('SELECT * FROM `Product` WHERE ProductID = ?',[id]).then((result) => {
+        query('SELECT Thumbnail ,ProductName,Price,Stock,Description FROM `Product` WHERE ProductID = ?',[id]).then((result) => {
             resolve(result)
         }).catch((error) => {reject(error);})             
     });
 };
 
-const rankProductBySales = () => {
+ /**
+  * @param  {number} _page
+  * @param  {string} _filter
+  * @param  {string} _sort
+  * @param  {number} _maxPrice
+  * @param  {number} _minPrice
+  */
+const rankProductBySales = (_page,_sort,_maxPrice,_minPrice) => {
     return new Promise((resolve,reject) => {
-        query('SELECT * FROM `Product` ORDER BY Sales DESC',).then((result) => {
-            resolve(result)
-        }).catch((error) => {reject(error);})             
+        let count;
+        const filterOptions={
+            filter:"Sales",
+            sort:_sort,
+            minPrice:_minPrice,
+            maxPrice:_maxPrice,
+            page:_page
+        }
+        console.log(filterOptions);
+        query('SELECT COUNT(*) as _count FROM Product WHERE OnShelf = "Yes" ').then(async (result)=>{
+            count = Number(result[0]._count);
+            let numOfPage = Math.ceil(count/20);
+            let getProductsSql = 'SELECT Thumbnail,ProductName,Price,ProductID FROM `Product` WHERE OnShelf = "Yes"';
+            console.log(getProductsSql);
+            let filterResult = await filterProducts.filterProducts(getProductsSql,filterOptions);
+            console.log(filterResult);
+            resolve({ 
+                filterResult,
+                count,
+                numOfPage,
+            });
+        }).catch((error) => {reject(error);});     
     });
 };
 
@@ -147,14 +129,31 @@ const countProductByCategory = (productName) => {
     });
 };
 
- const searchByName = (productName) =>{
-     return new Promise((resolve, reject) =>{
-         console.log(productName);
-         query('SELECT * FROM Product WHERE ProductName LIKE ?',[`%${productName}%`]).then((result) =>{
-            resolve(result);
-         }).catch((error) => {reject(error);})
-     });
- };
+const searchProductInAll = (productName, _page,_filter,_sort,_maxPrice,_minPrice) => {
+    return new Promise((resolve,reject) => {
+        const filterOptions={
+            filter:_filter,
+            sort:_sort,
+            minPrice:_minPrice,
+            maxPrice:_maxPrice,
+            page:_page
+        }       
+        let count;
+        query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE  ProductName LIKE ? AND OnShelf = "Yes" ',[`%${productName}%`]).then(async(result)=>{
+            count = Number(result[0]._count);
+            let numOfPage = Math.ceil(count/20);
+            let getProductsSql = 'SELECT ProductName,Price,Sales,Stock,TypeName,Description FROM Product LEFT JOIN Type on Product.Type = Type.TypeID WHERE ProductName Like "%'+String(productName)+'%" AND OnShelf = "Yes"';
+            let filterResult = await filterProducts.filterProducts(getProductsSql,filterOptions);
+            console.log(filterResult);
+            resolve({ 
+                filterResult,
+                count,
+                numOfPage,
+            });
+        }).catch((error) => {reject(error);});
+    })      
+};
+
 
 export default 
 {
@@ -163,5 +162,6 @@ export default
     getProductDetail,
     rankProductBySales,
     countProductByCategory,
-    searchByName
+    searchProductInAll
+
 }

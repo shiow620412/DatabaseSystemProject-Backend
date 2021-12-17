@@ -14,7 +14,7 @@ import query from '../database/basic.database.js';
         query('SELECT COUNT(*) as _count FROM `Order` WHERE MemberID = ? ',[user.id]).then((result)=>{
             count = Number(result[0]._count);
             let numOfPage = Math.ceil(count/20);
-            query('SELECT * FROM `Order` WHERE MemberID = ? LIMIT ?,?', [user.id, minLimit, 20]).then((result) => {
+            query('SELECT OrderID,Date,Total,StatusType FROM `Order` ,Payment,OrderStatus WHERE MemberID = ? and `Order`.OrderStatus = OrderStatus.OrderStatusID and `Order`.PaymentMethod = Payment.PaymentID  LIMIT ?,?', [user.id, minLimit, 20]).then((result) => {
                 resolve({ 
                     result,
                     count,
@@ -40,14 +40,28 @@ import query from '../database/basic.database.js';
  * @param  {number[]} values.productID
  * @param  {string[]} values.productName
  */
- const createOrder = (user, values) => {
+ const createOrder = async(user, values) => {
     let total = 0;
-    values.price.forEach((num, index) => {
-        total += (values.price[index]) * (values.quantity[index]);
-    });
+    let count = 0;
+    let totalPrice = await new Promise((resolve,reject) => {
+        values.productID.forEach((value, index) => {
+            query('SELECT Price FROM `Product` WHERE ProductID = ?', value).then(async(result) => {
+                total += Number(result[0].Price) * values.quantity[index];
+                count++;
+                if(count===(values.productID.length)){
+                    resolve(total);
+                }
+            }).catch((error) => {reject(error);});
+        });
+    })
+    console.log(totalPrice);
+    // let total = 0;
+    // values.price.forEach((num, index) => {
+    //     total += (values.price[index]) * (values.quantity[index]);
+    // });
     return new Promise((resolve,reject) => {
         query('INSERT INTO `Order` (`MemberID`,`Date`, `Total`, `OrderStatus`, `PaymentMethod`) VALUES (?, ?, ?, ?, ?)',
-            [user.id, values.date, total, values.orderStatus, 3]).then((result) => {
+            [user.id, values.date, totalPrice, 3,values.paymentMethod]).then((result) => {
                 const orderId = result.insertId;
                 let sql = 'INSERT INTO `OrderDetail` (`OrderID`,`ProductID`, `Quantity`) values';
                 const parameterBracket = [];
@@ -93,10 +107,11 @@ const deleteOrder = (user,id) =>{
  * @param  {object} user
  * @param  {string} user.id
  */
+// TODO: 需join orderStatus
 const checkOrderDetail = (user,id) =>{
     return new Promise((resolve,reject) => { 
-        query('SELECT O.OrderID ,O.MemberID,O.Date,O.OrderStatus,D.ProductID,D.Quantity FROM `Order` AS O LEFT JOIN OrderDetail AS D on O.OrderID=D.OrderID WHERE O.OrderID =? AND O.MemberID =?', 
-        [id,user.id]).then((result) => {
+        query('SELECT DISTINCT Product.ProductName,OrderDetail.Quantity FROM OrderDetail ,Product,`Order` WHERE OrderDetail.ProductID = Product.ProductID  and Order.MemberID=? AND OrderDetail.OrderID =? ', 
+        [user.id,id]).then((result) => {
             resolve(result);
         }).catch((error) => {reject(error);})
     })    

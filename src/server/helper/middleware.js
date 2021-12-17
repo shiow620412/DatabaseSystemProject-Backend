@@ -37,25 +37,26 @@ function verifyToken(req, res, next){
 };
 
 function outputError(err, req, res, next){
+    const stack = err?.stack.split("\n").map((item) => item.trim())
     if (err.sql){
         res.status(err.status).json({
-            sql: err.sql,
-            message: err.isPublic ? err.message : httpStatus[err.status],
+            sql: err.isDev ? err.sql : undefined,
+            message: err.isDev ? err.message : httpStatus[err.status],
             code: err.code ? err.code : httpStatus[err.status],
-            stack: config.env === 'development' ? err.stack : {}
+            stack: err.isDev ? stack : undefined
         });
     }else{
         if(err.status){
             res.status(err.status).json({
-                message: err.isPublic ? err.message : httpStatus[err.status],
+                message: err.message,
                 code: err.code ? err.code : httpStatus[err.status],
-                stack: config.env === 'development' ? err.stack : {}
+                stack: err.isDev ? stack : undefined
             });
         }else{
             res.status(500).json({
-                message: err.message,
+                message: config.env === "development" ? err.message : httpStatus[500],
                 code: 500,
-                stack: config.env === 'development' ? err.stack : {}
+                stack: config.env === "development" ? stack : undefined
             })
         }
        
@@ -68,9 +69,9 @@ function checkAdmin(req, res, next){
         if(result === true){
             next();
         }else{
-            res.status(403).send({
-                code:403,
-                message:httpStatus[403]
+            res.status(400).send({
+                code:400,
+                message:httpStatus[400]
             })
         }
     }).catch((_error) => {next(error.MySQLError(_error))});
@@ -78,7 +79,7 @@ function checkAdmin(req, res, next){
 }
  
 function checkStock(req, res, next){
-    checkStockByProductID(req.body).then((result)=>{
+    checkStockByProductID.checkStockByProductID(req.body).then((result)=>{
         if(result === true){
             next();
         }else{

@@ -11,28 +11,35 @@ import query from '../database/basic.database.js';
  */
 const Login = (values) => {
     return new Promise((resolve,reject) => {
-        query("SELECT * FROM Member WHERE Account = ?", values.account).then((result) => {
-            const queryPassword = result[0].Password; 
-            const userPassword = values.password; 
-            console.log(queryPassword);
-            if (queryPassword === userPassword) {
-                // 產生 JWT
-                const payload = {
-                    user_id: result[0].MemberID,
-                    user_name: result[0].Name,
-                    user_mail: result[0].Email
-                };
-                // 取得 API Token
-                const token = jwt.sign({ payload, exp: Math.floor(Date.now() / 1000) + (86400 * 365) }, config.secretKey);
-                resolve({ 
-                    code: 200,
-                    message: '登入成功',
-                    token 
-                }); 
-            } else {
-                reject(error.APIError("輸入的密碼有誤")); 
+        query('SELECT COUNT(*) as _count FROM Member WHERE Member.Account = ?',[values.account]).then((results)=>{
+            if(Number(results[0]._count)>0) {
+                query("SELECT * FROM Member WHERE Account = ?", values.account).then((result) => {
+                    const queryPassword = result[0].Password; 
+                    const userPassword = values.password; 
+                    console.log(queryPassword);
+                    if (queryPassword === userPassword) {
+                        // 產生 JWT
+                        const payload = {
+                            user_id: result[0].MemberID,
+                            user_name: result[0].Name,
+                            user_mail: result[0].Email
+                        };
+                        // 取得 API Token
+                        const token = jwt.sign({ payload, exp: Math.floor(Date.now() / 1000) + (86400 * 365) }, config.secretKey);
+                        resolve({ 
+                            code: 200,
+                            message: '登入成功',
+                            token 
+                        }); 
+                    } else {
+                        reject(error.APIError("輸入的密碼有誤", new Error())); 
+                    }
+                }).catch((error) => {reject(error);})
+            }else{
+                reject(error.APIError("輸入的帳號不存在", new Error())); 
             }
         }).catch((error) => {reject(error);})
+        
     })
 };
 
@@ -60,17 +67,26 @@ const findBackPassword = (value) => {
  */
 const Register = (values) => {
     return new Promise((resolve,reject) => {
+        console.log(values);
         query("SELECT * FROM Member WHERE Account = ? AND Email = ?", [values.account,values.email]).then((result) => {
             if (Object.keys(result).length === 0) {
                 let phone = "";
                 let address="";
-                query('INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `Address`,`Phone`, `IsAdmin`, `isBan`) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                query('INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `Address`,`Phone`, `IsAdmin`, `isBan`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                     [values.email, values.name, values.account, values.password, address, phone,  0 , 0]).then((result) => {
+                        const payload = {
+                            user_id: result.insertId,
+                            user_name: values.name,
+                            user_mail: values.email
+                        };
+                        const token = jwt.sign({ payload, exp: Math.floor(Date.now() / 1000) + (86400 * 365) }, config.secretKey);
+
                         resolve({ 
                             code: 200,
-                            message: '註冊成功', 
+                            message: '註冊成功',
+                            token 
                         });  
-                    });
+                    }).catch((error) => {reject(error);})
             } else {
                 reject(error.APIError("註冊失敗", new Error())); 
             }
@@ -116,7 +132,7 @@ const findCreditCard =(user,page)=>{
         if(page===undefined)
             page=1
         let minLimit=(Number(page)-1)*50  
-        query('SELECT * FROM `CreditCard` WHERE `MemberID` = ?  LIMIT ?,?', [user.id, minLimit, 50]).then((result) => {
+        query('SELECT CreditCardNumber,ExpireYear,ExpireMonth,SecurityCode FROM `CreditCard` WHERE `MemberID` =?  LIMIT ?,?', [user.id, minLimit, 50]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);});
     }) 
@@ -131,6 +147,7 @@ const findCreditCard =(user,page)=>{
  */
 const deleteCreditCard =(user,value)=>{
     return new Promise((resolve,reject) => {
+        console.log (value.cardNumber);
         query('DELETE FROM `CreditCard` WHERE `MemberID` = ?  AND `CreditCardNumber` = ? ', [user.id, value.cardNumber]).then((result) => {
             resolve({ 
                 code: 200, 
