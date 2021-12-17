@@ -30,11 +30,19 @@ const countProductByCategory = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+//
+const searchByName = (req, res, next) =>{
+  productModule.searchByName(req.query["productName"]).then((result) => {
+    res.send(result);
+  }).catch((error) => { next(error) });
+};
+
 export default 
 {
   getProducts,
   searchProduct,
   getProductDetail,
   rankProductBySales, 
-  countProductByCategory
+  countProductByCategory,
+  searchByName
 }

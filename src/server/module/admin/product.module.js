@@ -27,17 +27,21 @@ import query from '../../database/basic.database.js';
  */
 const deleteProduct = (id) => {
     return new Promise((resolve,reject) => {
-        let no="No";
-        console.log(id)
-        query('UPDATE  `Product` SET OnShelf = ? WHERE ProductID = ?',
-        [no,id]).then((result) => {
-            resolve({
-                code: 200,
-                message: "商品下架成功",
-            })
-        }).catch((error) => {reject(error);})             
+        query('SELECT * FROM Product WHERE ProductID = ?',[id]).then((result) =>{
+            var queryonshelf = result[0].OnShelf;
+            if(queryonshelf === 'Yes'){
+                query('UPDATE Product SET OnShelf = "No" WHERE ProductID = ? ',[id]).then((result) =>{
+                        resolve('成功將商品下架');
+                }).catch((error) =>{reject(error); });
+
+            }else if(queryonshelf === 'No'){
+                resolve('商品已被下架');
+            }else{
+                resolve('商品不存在，請更改商品ID');
+            }
+        }).catch((error) =>{reject(error); });
     });
-};
+}
 
 /**
  * @param  {string} id

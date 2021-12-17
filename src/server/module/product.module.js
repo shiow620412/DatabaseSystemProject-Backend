@@ -15,7 +15,7 @@ const getProducts = (page,price,stock,id,sales) => {
         let minLimit=(Number(page)-1)*20  
         let count;
         let sqltype= price+stock+id+sales;
-        let sql;
+        let sql = '';
         switch(sqltype){
             case '0000':
                 sql='Order By Price  ,Stock  ,ProductID  ,Sales ';               
@@ -106,7 +106,7 @@ const searchProductByName = (productName, page) => {
         query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ? AND OnShelf = "Yes" ',[`%${productName}%`,]).then((result)=>{
             count = Number(result[0]._count);
             let numOfPage = Math.ceil(count/20);
-            query('ProductName,Price,Sales,Stock,TypeName,Description FROM Product LEFT JOIN Type on Product.Type = Type.TypeID WHERE ProductName Like ? AND OnShelf = "Yes" LIMIT ?,?', [`%${productName}%`,minLimit,20]).then((result) => {
+            query('SELECT ProductName,Price,Sales,Stock,TypeName,Description FROM Product LEFT JOIN Type on Product.Type = Type.TypeID WHERE ProductName Like ? AND OnShelf = "Yes" LIMIT ?,?', [`%${productName}%`,minLimit,20]).then((result) => {
                 resolve({ 
                     result,
                     count,
@@ -147,11 +147,21 @@ const countProductByCategory = (productName) => {
     });
 };
 
+ const searchByName = (productName) =>{
+     return new Promise((resolve, reject) =>{
+         console.log(productName);
+         query('SELECT * FROM Product WHERE ProductName LIKE ?',[`%${productName}%`]).then((result) =>{
+            resolve(result);
+         }).catch((error) => {reject(error);})
+     });
+ };
+
 export default 
 {
     getProducts,
     searchProductByName,
     getProductDetail,
     rankProductBySales,
-    countProductByCategory
+    countProductByCategory,
+    searchByName
 }
