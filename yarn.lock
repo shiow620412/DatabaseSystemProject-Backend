@@ -308,6 +308,11 @@
     "write-file-atomic" "^3.0.0"
     "xdg-basedir" "^4.0.0"
 
+"connect-history-api-fallback@^1.6.0":
+  "integrity" "sha512-e54B99q/OUoH64zYYRf3HBP5z24G38h5D3qXu23JGRoigpX5Ss4r9ZnDk3g0Z8uQC2x2lPaJ+UlWBc1ZWBWdLg=="
+  "resolved" "https://registry.npmjs.org/connect-history-api-fallback/-/connect-history-api-fallback-1.6.0.tgz"
+  "version" "1.6.0"
+
 "content-disposition@0.5.2":
   "integrity" "sha1-DPaLud318r55YcOoUXjLhdunjLQ="
   "resolved" "https://registry.npmjs.org/content-disposition/-/content-disposition-0.5.2.tgz"
