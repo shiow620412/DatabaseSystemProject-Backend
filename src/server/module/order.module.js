@@ -7,7 +7,7 @@ import query from '../database/basic.database.js';
  */
  const searchOrderByID = (user, page) => {
     return new Promise((resolve,reject) => {
-        if(page === undefined)
+        if(page === undefined || filterOptions.page === "")
             page = 1
         let minLimit = (Number(page)-1)*20  
         let count;

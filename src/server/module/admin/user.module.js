@@ -9,7 +9,7 @@ import query from '../../database/basic.database.js';
  */
  const listUser = (page) => {
     return new Promise((resolve,reject) => {
-        if(page === undefined)
+        if(page === undefined || filterOptions.page === "")
             page = 1
         const dataPerPage = 50;
         const minLimit=(Number(page) - 1) * dataPerPage  
