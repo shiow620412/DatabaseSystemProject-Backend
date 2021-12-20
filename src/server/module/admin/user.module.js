@@ -26,18 +26,33 @@ import query from '../../database/basic.database.js';
         }).catch((error) => {reject(error);});
     })    
 };
-
 /**
- * @param  {string} page
+ * @param  {string} id
  */
+
  const banUsers = (id) => {
     return new Promise((resolve,reject) => { 
-        query('UPDATE Member SET isBan = 1  WHERE MemberID = ?', [id]).then((result) => {
-            resolve({ 
-                code: 200,
-                message: '停權成功', 
-            });
+        query('Select isBan From Member Where MemberID = ?',[id]).then((result)=>{
+            let ban = Number(result[0].isBan);
+            if (ban === 0) {
+                query('UPDATE Member SET isBan = 1  WHERE MemberID = ? ', [id]).then((result) => {
+                    resolve({ 
+                        code: 200,
+                        message: '停權成功', 
+                    });
+                }).catch((error) => {reject(error);});
+            }
+            else{
+                query('UPDATE Member SET isBan = 0  WHERE MemberID = ? ', [id]).then((result) => {
+                    resolve({ 
+                        code: 200,
+                        message: '復權成功', 
+                    });
+                }).catch((error) => {reject(error);});
+            }
         }).catch((error) => {reject(error);});
+
+
     })    
 };
 

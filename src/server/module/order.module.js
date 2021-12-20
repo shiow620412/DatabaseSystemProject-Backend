@@ -1,10 +1,12 @@
 import query from '../database/basic.database.js';
 
 /** Search the orders by memberID*/
-/**
- * @param  {object} user
- * @param  {string} user.id
- */
+
+ /**
+  * @param  {object} user
+  * @param  {string} user.id
+  * @param  {string} page
+  */
  const searchOrderByID = (user, page) => {
     return new Promise((resolve,reject) => {
         if(page === undefined)
@@ -86,6 +88,7 @@ import query from '../database/basic.database.js';
 /**
  * @param  {object} user
  * @param  {string} user.id
+ * @param  {string} id
  */
 const deleteOrder = (user,id) =>{
     return new Promise((resolve,reject) => { 
@@ -106,8 +109,8 @@ const deleteOrder = (user,id) =>{
 /**
  * @param  {object} user
  * @param  {string} user.id
+ * @param  {string} id
  */
-// TODO: 需join orderStatus
 const checkOrderDetail = (user,id) =>{
     return new Promise((resolve,reject) => { 
         query('SELECT DISTINCT Product.ProductName,OrderDetail.Quantity FROM OrderDetail ,Product,`Order` WHERE OrderDetail.ProductID = Product.ProductID  and Order.MemberID=? AND OrderDetail.OrderID =? ', 

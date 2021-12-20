@@ -25,9 +25,11 @@ import query from '../../database/basic.database.js';
         
 };
 
-/**
- * @param  {number} id
- */
+ /**
+  * @param  {object} user
+  * @param  {string} user.id
+  * @param  {string} id
+  */
  const modifyOrder = (user, id) => {
     return new Promise((resolve,reject) => { 
         query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? AND MemberID = ?', [id, user.id]).then((result) => {

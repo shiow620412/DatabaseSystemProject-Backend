@@ -68,7 +68,9 @@ const searchProductByName = (productName, _page,_filter,_sort,_maxPrice,_minPric
         }).catch((error) => {reject(error);});
     })    
 };
-
+/**
+ * @param  {string} id
+ */
 const getProductDetail = (id) => {
     console.log(id)
     return new Promise((resolve,reject) => {
