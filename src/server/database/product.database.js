@@ -1,24 +1,29 @@
+import error from "../helper/error.js";
 import query from "./basic.database.js";
 
-async function checkStockByProductID(product) {
-    return new Promise((resolve, reject) => {
-        let count= 0;
-        product.productID.forEach(async (value, index) => {
-            await query('SELECT Stock FROM Product WHERE ProductID = ?', [value]).then((result) => {
-                if (product.quantity[index] > result[0].Stock) {
+/**
+ * @param  {object} values
+ * @param  {object[]} values.products
+ * @param  {Number} values.products.productId
+ * @param  {Number} values.products.quantity
+ * @param  {Number} values.paymentMethod
+ */
+function checkStockByProductID(values) {
+    return new Promise(async (resolve, reject) => {
+
+        for(let i = 0; i < values.products.length; i++){
+            await query('SELECT Stock FROM Product WHERE ProductID = ? AND OnShelf = "Yes"', [values.products[i].productId]).then((result) => {
+                if(result.length === 0)
+                    reject(error.APIError("查無此商品的庫存", new Error()));
+
+                if (values.products[i].quantity > result[0].Stock) {
                     resolve(false);
-                } 
-                else{
-                    count++;
-                    if(count===(product.productID.length)){
-                        resolve(true);
-                    }
-                }
+                }             
             }).catch((error) => {
                 reject(error);
             });
-        });
-
+        }
+        resolve(true);
         
 
 
