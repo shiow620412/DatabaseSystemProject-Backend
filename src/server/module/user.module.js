@@ -11,12 +11,10 @@ import query from '../database/basic.database.js';
  */
 const Login = (values) => {
     return new Promise((resolve,reject) => {
-        query('SELECT COUNT(*) as _count FROM Member WHERE Member.Account = ?',[values.account]).then((results)=>{
-            if(Number(results[0]._count)>0) {
-                query("SELECT * FROM Member WHERE Account = ?", values.account).then((result) => {
+        query("SELECT * FROM Member WHERE Account = ?", values.account).then((result) => {
+            if(result.length > 0) {
                     const queryPassword = result[0].Password; 
                     const userPassword = values.password; 
-                    console.log(queryPassword);
                     if (queryPassword === userPassword) {
                         // 產生 JWT
                         const payload = {
@@ -24,17 +22,18 @@ const Login = (values) => {
                             user_name: result[0].Name,
                             user_mail: result[0].Email
                         };
+                        const isAdmin = result[0].isAdmin ? true : false;
                         // 取得 API Token
                         const token = jwt.sign({ payload, exp: Math.floor(Date.now() / 1000) + (86400 * 365) }, config.secretKey);
                         resolve({ 
                             code: 200,
                             message: '登入成功',
-                            token 
+                            token,
+                            isAdmin 
                         }); 
                     } else {
                         reject(error.APIError("輸入的密碼有誤", new Error())); 
-                    }
-                }).catch((error) => {reject(error);})
+                    }          
             }else{
                 reject(error.APIError("輸入的帳號不存在", new Error())); 
             }
@@ -43,15 +42,19 @@ const Login = (values) => {
     })
 };
 
-/*  User findBackPassword   */
+/*  User findPassword   */
 /**
  * @param  {object} value
  * @param  {string} value.email
  */
-const findBackPassword = (value) => {
+const findPassword = (value) => {
     return new Promise((resolve,reject) => {
-        query('SELECT Password FROM Member  WHERE Email = ?',value.email ).then((result) => {            
-            resolve(result); 
+        query('SELECT Password FROM Member  WHERE Email = ?',value.email ).then((result) => {
+            if(result.length > 0 ){
+                resolve(result[0]); 
+            }else{
+                reject(error.APIError("查無此email", new Error()));
+            }
         }).catch((error) => {reject(error);})
     })
 };
@@ -60,20 +63,17 @@ const findBackPassword = (value) => {
 /**
  * @param  {object} values
  * @param  {string} values.email
- * @param  {string} values.name
  * @param  {string} values.account
  * @param  {string} values.password
- * @param  {string} values.address
+ * @param  {string} values.name
  */
 const Register = (values) => {
     return new Promise((resolve,reject) => {
         console.log(values);
-        query("SELECT * FROM Member WHERE Account = ? AND Email = ?", [values.account,values.email]).then((result) => {
+        query("SELECT * FROM Member WHERE Account = ? OR Email = ?", [values.account,values.email]).then((result) => {
             if (Object.keys(result).length === 0) {
-                let phone = "";
-                let address="";
-                query('INSERT INTO `Member`(`Email`, `Name`, `Account`, `Password`, `Address`,`Phone`, `IsAdmin`, `isBan`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                    [values.email, values.name, values.account, values.password, address, phone,  0 , 0]).then((result) => {
+                query('INSERT INTO `Member`(`Email`, `Account`, `Password`, `Name`) VALUES (?, ?, ?, ?)',
+                    [values.email, values.account, values.password, values.name]).then((result) => {
                         const payload = {
                             user_id: result.insertId,
                             user_name: values.name,
@@ -97,19 +97,21 @@ const Register = (values) => {
 /** User add the credit card */
 /**
  * @param  {object} user
- * @param  {string} user.id
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
  * @param  {object} credit
- * @param  {string} credit.number
- * @param  {string} credit.secret
+ * @param  {string} credit.cardNumber
+ * @param  {string} credit.securityCode
  * @param  {number} credit.month
  * @param  {number} credit.year
  */
 const addCreditCard = (user,credit) => {
     return new Promise((resolve,reject) => {
-        query("SELECT * FROM `CreditCard` WHERE CreditCardNumber = ? AND SecurityCode = ?", [credit.number,credit.secret]).then((result) => {
-            if (Object.keys(result).length === 0) {
+        query("SELECT * FROM `CreditCard` WHERE CreditCardNumber = ? AND SecurityCode = ?", [credit.cardNumber,credit.securityCode]).then((result) => {
+            if (result.length === 0) {
                 query('INSERT INTO `CreditCard`(`CreditCardNumber`, `MemberID`, `ExpireYear`, `ExpireMonth`, `SecurityCode`) VALUES (?, ?, ?, ?, ?)',
-                    [credit.number, user.id, credit.year, credit.month, credit.secret]).then((result) => {
+                    [credit.cardNumber, user.id, credit.year, credit.month, credit.securityCode]).then(() => {
                         resolve({ 
                             code: 200, 
                             message: '新增成功', 
@@ -125,14 +127,18 @@ const addCreditCard = (user,credit) => {
 /** List the credit card by MemberID */
 /**
  * @param  {object} user
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
  * @param  {number} page
  */
 const findCreditCard =(user,page)=>{
     return new Promise((resolve,reject) => {
-        if(page===undefined)
-            page=1
-        let minLimit=(Number(page)-1)*50  
-        query('SELECT CreditCardNumber,ExpireYear,ExpireMonth,SecurityCode FROM `CreditCard` WHERE `MemberID` =?  LIMIT ?,?', [user.id, minLimit, 50]).then((result) => {
+        if(page === undefined)
+            page = 1
+        const dataPerPage = 50
+        const minLimit = (Number(page) - 1) * dataPerPage  
+        query('SELECT CreditCardNumber,ExpireYear,ExpireMonth,SecurityCode FROM `CreditCard` WHERE `MemberID` =?  LIMIT ?,?', [user.id, minLimit, dataPerPage]).then((result) => {
             resolve(result); 
         }).catch((error) => {reject(error);});
     }) 
@@ -141,7 +147,9 @@ const findCreditCard =(user,page)=>{
 /** User delete the credit card */
 /**
  * @param  {object} user
- * @param  {number} user.id
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
  * @param  {object} value
  * @param  {string} value.cardNumber
  */
@@ -160,7 +168,9 @@ const deleteCreditCard =(user,value)=>{
 /** User modify the information */
 /**
  * @param  {object} user
- * @param  {number} user.id
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
  * @param  {object} value
  * @param  {string} value.email
  * @param  {string} value.name
@@ -172,7 +182,7 @@ const modifyInformation = (user,value) =>{
         query('UPDATE `Member` SET Email = ? , Name = ? ,Address = ? ,Phone = ? WHERE `MemberID` = ? ', [value.email, value.name, value.address, value.phone, user.id,]).then((result) => {
             resolve({ 
                 code: 200, 
-                message: '更改成功', 
+                message: '修改成功', 
             });  
         }).catch((error) => {reject(error);});
     }) 
@@ -181,7 +191,9 @@ const modifyInformation = (user,value) =>{
 /** User modify the password */
 /**
  * @param  {object} user
- * @param  {number} user.id
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
  * @param  {object} value
  * @param  {string} value.oldPassword
  * @param  {string} value.newPassword
@@ -189,7 +201,7 @@ const modifyInformation = (user,value) =>{
  const modifyPassword = (user,value) =>{
     return new Promise((resolve,reject) => {
         query("SELECT * FROM `Member` WHERE MemberID = ? AND Password = ?", [user.id, value.oldPassword]).then((result) => {
-            if (Object.keys(result).length === 0) {
+            if (result.length === 0) {
                 reject(error.APIError("舊密碼錯誤", new Error()));
             } else {               
                  query('UPDATE `Member` SET Password = ? WHERE MemberID = ?',
@@ -206,7 +218,7 @@ const modifyInformation = (user,value) =>{
 
 export default {
     Login,
-    findBackPassword ,
+    findPassword ,
     Register,
     addCreditCard,
     findCreditCard,
