@@ -16,7 +16,7 @@ import query from '../../database/basic.database.js';
         query('SELECT COUNT(*) as _count FROM Member ').then((result)=>{
             const total = Number(result[0]._count);
             const pages = Math.ceil(total / dataPerPage);
-            query('SELECT * FROM Member  LIMIT ?,?', [minLimit,dataPerPage]).then((result) => {
+            query('SELECT MemberID,Account,Name,Email,isAdmin,isBan FROM Member  LIMIT ?,?', [minLimit,dataPerPage]).then((result) => {
                 resolve({ 
                     result,
                     total,
