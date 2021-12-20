@@ -9,11 +9,12 @@ import error from '../../helper/error.js';
     return new Promise((resolve,reject) => {
         if(page === undefined)
             page = 1
-        const minLimit = (Number(page) - 1) * 50 ;
+        const dataPerPage = 50
+        const minLimit = (Number(page) - 1) * dataPerPage ;
         query('SELECT COUNT(*) as _count FROM `Order` ').then((result)=>{
             const total = Number(result[0]._count);
-            const pages = Math.ceil(total/20);
-            query('SELECT * FROM `Order`  LIMIT ?,?', [minLimit,50]).then((result) => {
+            const pages = Math.ceil(total / dataPerPage);
+            query('SELECT * FROM `Order`  LIMIT ?,?', [minLimit, dataPerPage]).then((result) => {
                 resolve({ 
                     result,
                     total,
