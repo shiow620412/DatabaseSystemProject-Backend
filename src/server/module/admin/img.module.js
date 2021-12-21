@@ -1,5 +1,9 @@
 import query from "../../database/basic.database.js";
 import {customAlphabet} from 'nanoid'
+/**
+ * @param  {} file
+ * @param  {string} host
+ */
 const uploadImage = (file, host) => {
     return new Promise((resolve,reject) => {
         
@@ -15,7 +19,6 @@ const uploadImage = (file, host) => {
         })
     })
 }
-
 
 export default {
     uploadImage
