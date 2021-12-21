@@ -9,18 +9,18 @@ import query from '../../database/basic.database.js';
  */
  const listUser = (page) => {
     return new Promise((resolve,reject) => {
-        if(page===undefined)
-            page=1
-        let minLimit=(Number(page)-1)*50  
-        let count;
+        if(page === undefined || filterOptions.page === "")
+            page = 1
+        const dataPerPage = 50;
+        const minLimit=(Number(page) - 1) * dataPerPage  
         query('SELECT COUNT(*) as _count FROM Member ').then((result)=>{
-            count = Number(result[0]._count);
-            let numOfPage = Math.ceil(count/20);
-            query('SELECT * FROM Member  LIMIT ?,?', [minLimit,50]).then((result) => {
+            const total = Number(result[0]._count);
+            const pages = Math.ceil(total / dataPerPage);
+            query('SELECT MemberID,Account,Name,Email,isAdmin,isBan FROM Member  LIMIT ?,?', [minLimit,dataPerPage]).then((result) => {
                 resolve({ 
                     result,
-                    count,
-                    numOfPage,
+                    total,
+                    pages,
                 }); 
             }).catch((error) => {reject(error);});
         }).catch((error) => {reject(error);});
@@ -28,14 +28,16 @@ import query from '../../database/basic.database.js';
 };
 
 /**
- * @param  {string} page
+ * @param  {string} userId
+ * @param  {string} status
  */
- const banUsers = (id) => {
+const modifyUserStatus = (userId, status) => {
     return new Promise((resolve,reject) => { 
-        query('UPDATE Member SET isBan = 1  WHERE MemberID = ?', [id]).then((result) => {
+        const UserStatus = status === "ban" ? 1 : 0;
+        query('UPDATE Member SET isBan = ? WHERE MemberID = ?', [UserStatus, userId]).then(() => {
             resolve({ 
                 code: 200,
-                message: '停權成功', 
+                message: UserStatus ? "停權成功" : "復權成功"
             });
         }).catch((error) => {reject(error);});
     })    
@@ -43,5 +45,5 @@ import query from '../../database/basic.database.js';
 
 export default {
     listUser,
-    banUsers
+    modifyUserStatus
 };

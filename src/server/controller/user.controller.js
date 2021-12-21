@@ -10,7 +10,7 @@ const userLogin = (req, res, next) => {
   
 /* User  findPassword */
 const findPassword = (req, res, next) => {
-  userModule.findBackPassword(req.body).then((result) => {
+  userModule.findPassword(req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };

@@ -1,114 +1,116 @@
 import query from '../database/basic.database.js';
-import filterProducts from '../database/product.database.js'
+import productDatabase from '../database/product.database.js'
+import error from '../helper/error.js';
 
 /** List the products in type on page  */
  /**
-  * @param  {number} type
-  * @param  {number} _page
-  * @param  {string} _filter
-  * @param  {string} _sort
-  * @param  {number} _maxPrice
-  * @param  {number} _minPrice
+  * @param  {string} categoryId
+  * @param  {string} page
+  * @param  {string} filter
+  * @param  {string} sort
+  * @param  {number} maxPrice
+  * @param  {number} minPrice
   */
-const getProducts = (type, _page,_filter,_sort,_maxPrice,_minPrice) => {
+const getProductsByCategory = (categoryId, page, filter, sort, maxPrice, minPrice) => {
     return new Promise((resolve,reject) => {
-        let count;
+
         const filterOptions={
-            filter:_filter,
-            sort:_sort,
-            minPrice:_minPrice,
-            maxPrice:_maxPrice,
-            page:_page
+            filter,
+            sort,
+            minPrice,
+            maxPrice,
+            page
         }       
-        query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE Type.TypeID = ? AND OnShelf = "Yes" ',[type]).then(async (result)=>{
-            count = Number(result[0]._count);
-            let numOfPage = Math.ceil(count/20);
-            let getProductsSql = 'SELECT Thumbnail,ProductName,Price,ProductID FROM Product WHERE Product.Type = '+String(type)+' AND OnShelf = "Yes"';
-            let filterResult = await filterProducts.filterProducts(getProductsSql,filterOptions);
-            console.log(filterResult);
-            resolve({ 
-                filterResult,
-                count,
-                numOfPage,
-            });
-        }).catch((error) => {reject(error);});
+
+        const dictionaryCondition = {
+            expressions: ["Product.Type = ?","OnShelf = ?"],
+            parameters:[categoryId,"YES"]
+        }    
+    
+        const getProductsSql = `SELECT Thumbnail,ProductName,Price,ProductID FROM Product `;
+        productDatabase.filterProducts(getProductsSql, filterOptions, dictionaryCondition).then((result) => {
+            resolve(result);
+        }).catch((error) => {reject(error)});  
+
+    
     })    
 };
 
 /** Search the products by name*/
 /**
   * @param  {string} productName
-  * @param  {number} _page
-  * @param  {string} _filter
-  * @param  {string} _sort
-  * @param  {number} _maxPrice
-  * @param  {number} _minPrice
+  * @param  {string} categoryId
+  * @param  {string} page
+  * @param  {string} filter
+  * @param  {string} sort
+  * @param  {number} maxPrice
+  * @param  {number} minPrice
  */
-const searchProductByName = (productName, _page,_filter,_sort,_maxPrice,_minPrice) => {
+
+const searchCategoryProductByName = (productName, categoryId, page, filter, sort, maxPrice, minPrice) => {
     return new Promise((resolve,reject) => {
-        let count;
         const filterOptions={
-            filter:_filter,
-            sort:_sort,
-            minPrice:_minPrice,
-            maxPrice:_maxPrice,
-            page:_page
-        }       
-        query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName Like ? AND OnShelf = "Yes" ',[`%${productName}%`]).then(async(result)=>{
-            count = Number(result[0]._count);
-            let numOfPage = Math.ceil(count/20);
-            let getProductsSql = 'SELECT Thumbnail,ProductName,Price,ProductID FROM Product WHERE ProductName Like "%'+String(productName)+'%" AND OnShelf = "Yes"';
-            let filterResult = await filterProducts.filterProducts(getProductsSql,filterOptions);
-            console.log(filterResult);
-            resolve({ 
-                filterResult,
-                count,
-                numOfPage,
-            });
-        }).catch((error) => {reject(error);});
+            filter,
+            sort,
+            minPrice,
+            maxPrice,
+            page
+        }
+        const dictionaryCondition = {
+            expressions: ["ProductName Like ?","OnShelf = ?","`Type` = ?"],
+            parameters:[`%${productName}%`,"YES",categoryId]
+        }    
+
+        const getProductsSql = 'SELECT Thumbnail,ProductName,Price,ProductID FROM Product';
+        productDatabase.filterProducts(getProductsSql, filterOptions, dictionaryCondition).then((result) => {
+            resolve(result);
+        }).catch((error) => {reject(error)});  
+       
+
     })    
 };
-
-const getProductDetail = (id) => {
-    console.log(id)
+/**
+ * @param  {string} productId
+ */
+const getProductDetail = (productId) => {
     return new Promise((resolve,reject) => {
-        query('SELECT Thumbnail ,ProductName,Price,Stock,Description FROM `Product` WHERE ProductID = ?',[id]).then((result) => {
-            resolve(result)
+        query('SELECT Thumbnail ,ProductName,Price,Stock,Description FROM `Product` WHERE ProductID = ?',[productId]).then((result) => {
+            if(result.length > 0){
+                resolve(result[0])
+            }else{
+                reject(error.APIError("查無此商品", new Error()));
+            }
         }).catch((error) => {reject(error);})             
     });
 };
 
- /**
-  * @param  {number} _page
-  * @param  {string} _filter
-  * @param  {string} _sort
-  * @param  {number} _maxPrice
-  * @param  {number} _minPrice
-  */
-const rankProductBySales = (_page,_sort,_maxPrice,_minPrice) => {
+/**
+  * @param  {string} page
+  * @param  {string} filter
+  * @param  {string} sort
+  * @param  {number} maxPrice
+  * @param  {number} minPrice
+ */
+const getProductsBySales = (page, sort, maxPrice, minPrice) => {
     return new Promise((resolve,reject) => {
-        let count;
         const filterOptions={
-            filter:"Sales",
-            sort:_sort,
-            minPrice:_minPrice,
-            maxPrice:_maxPrice,
-            page:_page
+            filter: "Sales",
+            sort,
+            minPrice,
+            maxPrice,
+            page
         }
-        console.log(filterOptions);
-        query('SELECT COUNT(*) as _count FROM Product WHERE OnShelf = "Yes" ').then(async (result)=>{
-            count = Number(result[0]._count);
-            let numOfPage = Math.ceil(count/20);
-            let getProductsSql = 'SELECT Thumbnail,ProductName,Price,ProductID FROM `Product` WHERE OnShelf = "Yes"';
-            console.log(getProductsSql);
-            let filterResult = await filterProducts.filterProducts(getProductsSql,filterOptions);
-            console.log(filterResult);
-            resolve({ 
-                filterResult,
-                count,
-                numOfPage,
-            });
-        }).catch((error) => {reject(error);});     
+
+        const dictionaryCondition = {
+            expressions: ["OnShelf = ?"],
+            parameters:["YES"]
+        }    
+
+        const getProductsSql = 'SELECT Thumbnail,ProductName,Price,ProductID FROM Product';
+        productDatabase.filterProducts(getProductsSql, filterOptions, dictionaryCondition).then((result) => {
+            resolve(result);
+        }).catch((error) => {reject(error)});  
+  
     });
 };
 
@@ -126,37 +128,42 @@ const countProductByCategory = (productName) => {
 };
 
 
-const searchProductInAll = (productName, _page,_filter,_sort,_maxPrice,_minPrice) => {
+
+/**
+  * @param  {string} productName
+  * @param  {string} page
+  * @param  {string} filter
+  * @param  {string} sort
+  * @param  {number} maxPrice
+  * @param  {number} minPrice
+ */
+const searchAllProductByName = (productName, page, filter, sort, maxPrice, minPrice) => {
     return new Promise((resolve,reject) => {
         const filterOptions={
-            filter:_filter,
-            sort:_sort,
-            minPrice:_minPrice,
-            maxPrice:_maxPrice,
-            page:_page
-        }       
-        let count;
-        query('SELECT COUNT(*) as _count FROM Product LEFT JOIN Type on Type = TypeID WHERE  ProductName LIKE ? AND OnShelf = "Yes" ',[`%${productName}%`]).then(async(result)=>{
-            count = Number(result[0]._count);
-            let numOfPage = Math.ceil(count/20);
-            let getProductsSql = 'SELECT ProductName,Price,Sales,Stock,TypeName,Description FROM Product LEFT JOIN Type on Product.Type = Type.TypeID WHERE ProductName Like "%'+String(productName)+'%" AND OnShelf = "Yes"';
-            let filterResult = await filterProducts.filterProducts(getProductsSql,filterOptions);
-            console.log(filterResult);
-            resolve({ 
-                filterResult,
-                count,
-                numOfPage,
-            });
-        }).catch((error) => {reject(error);});
+            filter,
+            sort,
+            minPrice,
+            maxPrice,
+            page
+        }  
+        const dictionaryCondition = {
+            expressions: ["ProductName Like ?","OnShelf = ?"],
+            parameters:[`%${productName}%`,"YES"]
+        }    
+
+        const getProductsSql = 'SELECT Thumbnail,ProductName,Price,ProductID FROM Product';
+        productDatabase.filterProducts(getProductsSql, filterOptions, dictionaryCondition).then((result) => {
+            resolve(result);
+        }).catch((error) => {reject(error)});  
     })      
 };
 
 export default 
 {
-    getProducts,
-    searchProductByName,
+    getProductsByCategory,
+    searchCategoryProductByName,
     getProductDetail,
-    rankProductBySales,
+    getProductsBySales,
     countProductByCategory,
-    searchProductInAll
+    searchAllProductByName
 }

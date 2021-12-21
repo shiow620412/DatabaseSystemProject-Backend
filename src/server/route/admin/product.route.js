@@ -7,9 +7,9 @@ const router = express.Router();
 router.post('/', productController.addProduct); 
 
 //下架商品
-router.delete("/:id",productController.deleteProduct);
+router.delete("/:productId",productController.deleteProduct);
 
 //更新商品
-router.put("/:id",productController.modifyProduct);
+router.put("/:productId",productController.modifyProduct);
 
 export default router;

@@ -1,4 +1,5 @@
 import query from '../../database/basic.database.js';
+import error from '../../helper/error.js';
 
 /** List the orders on page  */
 /**
@@ -6,18 +7,18 @@ import query from '../../database/basic.database.js';
  */
  const getOrderList = (page) => {
     return new Promise((resolve,reject) => {
-        if(page===undefined)
-            page=1
-        let minLimit=(Number(page)-1)*50  
-        let count;
-        query('SELECT COUNT(*) as _count FROM Order ').then((result)=>{
-            count = Number(result[0]._count);
-            let numOfPage = Math.ceil(count/20);
-            query('SELECT * FROM Order  LIMIT ?,?', [minLimit,50]).then((result) => {
+        if(page === undefined || filterOptions.page === "")
+            page = 1
+        const dataPerPage = 50
+        const minLimit = (Number(page) - 1) * dataPerPage ;
+        query('SELECT COUNT(*) as _count FROM `Order` ').then((result)=>{
+            const total = Number(result[0]._count);
+            const pages = Math.ceil(total / dataPerPage);
+            query('SELECT * FROM `Order`  LIMIT ?,?', [minLimit, dataPerPage]).then((result) => {
                 resolve({ 
                     result,
-                    count,
-                    numOfPage,
+                    total,
+                    pages,
                 }); 
             }).catch((error) => {reject(error);});
         }).catch((error) => {reject(error);});
@@ -25,25 +26,28 @@ import query from '../../database/basic.database.js';
         
 };
 
-/**
- * @param  {number} id
- */
- const modifyOrder = (user, id) => {
+ /**
+  * @param  {string} orderId
+  */
+ const cancelOrder = (orderId) => {
     return new Promise((resolve,reject) => { 
-        query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? AND MemberID = ?', [id, user.id]).then((result) => {
-            resolve({ 
-                code: 200,
-                message: '取消成功', 
-            });
-            query('UPDATE Product,OrderDetail SET Product.Stock = Product.Stock + OrderDetail.Quantity WHERE Product.ProductID = OrderDetail.ProductID AND OrderID = ?',[id])
-            .then((result) =>{
-                console.log(result)
-            })  
+        query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? AND OrderStatus != 2', [orderId]).then((result) => {
+            if(result.affectedRows > 0 ){
+                query('UPDATE Product,OrderDetail SET Product.Stock = Product.Stock + OrderDetail.Quantity WHERE Product.ProductID = OrderDetail.ProductID AND OrderID = ?',[orderId])
+                .then(() =>{
+                    resolve({ 
+                        code: 200,
+                        message: '取消成功', 
+                    });
+                })  
+            }else{
+                reject(error.APIError("取消失敗", new Error()))
+            }
         }).catch((error) => {reject(error);})
     })     
 };
 
 export default{
     getOrderList,
-    modifyOrder
+    cancelOrder
 }

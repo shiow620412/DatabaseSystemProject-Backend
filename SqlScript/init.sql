@@ -39,12 +39,15 @@ INSERT INTO `CreditCard` VALUES ('1234567890123457', 1, 2021, 12, 123);
 COMMIT;
 
 -- ----------------------------
--- Table structure for IMG
+-- Table structure for Image
 -- ----------------------------
-DROP TABLE IF EXISTS `IMG`;
-CREATE TABLE `IMG` (
-  `img` blob
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DROP TABLE IF EXISTS `Image`;
+CREATE TABLE `Image`  (
+  `filename` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `mimetype` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `img` longblob NULL,
+  PRIMARY KEY (`filename`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of IMG
@@ -64,8 +67,8 @@ CREATE TABLE `Member` (
   `Password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `Address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `Phone` varchar(255) DEFAULT NULL,
-  `IsAdmin` int NOT NULL,
-  `isBan` int NOT NULL,
+  `isAdmin` int NOT NULL DEFAULT 0,
+  `isBan` int NOT NULL DEFAULT 0,
   PRIMARY KEY (`MemberID`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 

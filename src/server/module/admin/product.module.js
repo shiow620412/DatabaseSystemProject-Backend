@@ -4,33 +4,33 @@ import query from '../../database/basic.database.js';
 /**
  * @param  {object} product
  * @param  {string} product.name
- * @param  {string} product.price
+ * @param  {Number} product.price
  * @param  {string} product.thumbnail
  * @param  {string} product.description
- * @param  {string} product.type
- * @param  {string} product.stock
+ * @param  {Number} product.type
+ * @param  {Number} product.stock
  */
  const addProduct = (product) => {
     return new Promise((resolve,reject) => {
         query('INSERT INTO `Product`(`ProductName`, `Price`, `Thumbnail`, `Description`, `Sales` , `Type`, `Stock`, `OnShelf`) VALUES (?, ?, ?, ?, ?, ?, ?, ? )',
-        [product.name, product.price, product.thumbnail, product.description, 0, product.type, product.stock, "Yes"]).then((result) => {
+        [product.name, product.price, product.thumbnail, product.description, 0, product.type, product.stock, "Yes"]).then(() => {
             resolve({
                 code: 200,
                 message: "商品上架成功",
             })
         }).catch((error) => {reject(error);})             
-    });
+    });t
 };
 
 /**
- * @param  {string} id
+ * @param  {string} productId
  */
-const deleteProduct = (id) => {
+const deleteProduct = (productId) => {
     return new Promise((resolve,reject) => {
-        let no="No";
-        console.log(id)
+        const shelfStatus = "No";
+
         query('UPDATE  `Product` SET OnShelf = ? WHERE ProductID = ?',
-        [no,id]).then((result) => {
+        [shelfStatus,productId]).then(() => {
             resolve({
                 code: 200,
                 message: "商品下架成功",
@@ -42,15 +42,15 @@ const deleteProduct = (id) => {
 /**
  * @param  {string} id
  * @param  {object} values
- * @param  {number} values.price
+ * @param  {Number} values.price
  * @param  {string} values.thumbnail
  * @param  {string} values.description
- * @param  {number} values.stock
+ * @param  {Number} values.stock
  */
  const modifyProduct = (id, values) => {
     return new Promise((resolve,reject) => {
         query('UPDATE  `Product` SET Price = ?, Thumbnail = ?, Description = ?, Stock = ? WHERE ProductID = ?',
-        [values.price, values.thumbnail, values.description, values.stock, id]).then((result) => {
+        [values.price, values.thumbnail, values.description, values.stock, id]).then(() => {
             resolve({
                 code: 200,
                 message: "商品資訊更新成功",
