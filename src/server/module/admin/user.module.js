@@ -29,15 +29,27 @@ import query from '../../database/basic.database.js';
 
 /**
  * @param  {string} userId
- * @param  {string} status
+ * @param  {object} operate
+ * @param  {boolean} operate.isBan
+ * @param  {boolean} operate.isAdmin
  */
-const modifyUserStatus = (userId, status) => {
+const modifyUserStatus = (userId, operate) => {
     return new Promise((resolve,reject) => { 
-        const UserStatus = status === "ban" ? 1 : 0;
-        query('UPDATE Member SET isBan = ? WHERE MemberID = ?', [UserStatus, userId]).then(() => {
+        const expectColumns = ["isAdmin", "isBan"];
+        const params = []
+        const operateColumns = []
+        expectColumns.forEach(column => {
+            if(operate[column] !== undefined){
+                operateColumns.push(`${column} = ?`);
+                params.push(operate[column] ? 1 : 0);
+            }
+        });
+        params.push(userId);
+        const sql = `UPDATE Member SET ${operateColumns.join(",")} WHERE MemberID = ?`  
+        query(sql, params).then(() => {
             resolve({ 
                 code: 200,
-                message: UserStatus ? "停權成功" : "復權成功"
+                message: "操作成功"
             });
         }).catch((error) => {reject(error);});
     })    

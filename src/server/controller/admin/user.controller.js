@@ -7,7 +7,7 @@ const getUsers = (req, res, next) => {
 };
 
 const modifyUser = (req, res, next) => {
-  userModule.modifyUserStatus(req.params.userId, req.params.status).then((result) => {
+  userModule.modifyUserStatus(req.params.userId, req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
