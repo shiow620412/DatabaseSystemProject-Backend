@@ -162,9 +162,9 @@ CREATE TABLE `OrderStatus` (
 -- Records of OrderStatus
 -- ----------------------------
 BEGIN;
-INSERT INTO `OrderStatus` VALUES (1, '交易完成');
-INSERT INTO `OrderStatus` VALUES (2, '交易取消');
-INSERT INTO `OrderStatus` VALUES (3, '確認中');
+INSERT INTO `OrderStatus` VALUES (1, '訂單完成');
+INSERT INTO `OrderStatus` VALUES (2, '訂單取消');
+INSERT INTO `OrderStatus` VALUES (3, '訂單成立');
 COMMIT;
 
 -- ----------------------------
