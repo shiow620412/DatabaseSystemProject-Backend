@@ -134,7 +134,7 @@ const addCreditCard = (user,credit) => {
  */
 const findCreditCard =(user,page)=>{
     return new Promise((resolve,reject) => {
-        if(page === undefined || filterOptions.page === "")
+        if(page === undefined || page === "")
             page = 1
         const dataPerPage = 50
         const minLimit = (Number(page) - 1) * dataPerPage  
