@@ -116,7 +116,7 @@ const addCreditCard = (user,credit) => {
                             code: 200, 
                             message: '新增成功', 
                         });  
-                    });
+                    }).catch((error) => {reject(error)});
             } else {
                 reject(error.APIError("新增失敗", new Error())); 
             }
