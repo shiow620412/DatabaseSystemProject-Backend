@@ -1,5 +1,6 @@
 import imgModule from "../../module/admin/img.module.js";
 import error from "../../helper/error.js";
+
 const uploadImg = (req, res, next) => {
     const { file } = req
     if (file) {
@@ -8,11 +9,11 @@ const uploadImg = (req, res, next) => {
         }).catch((error) => {
             next(error)
         })
-        
     } else {    
         next(error.APIError("請選擇圖片", new Error()));
     }
 }
+
 export default
 {
     uploadImg

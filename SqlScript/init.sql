@@ -67,8 +67,8 @@ CREATE TABLE `Member` (
   `Password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `Address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `Phone` varchar(255) DEFAULT NULL,
-  `IsAdmin` int NOT NULL,
-  `isBan` int NOT NULL,
+  `isAdmin` int NOT NULL DEFAULT 0,
+  `isBan` int NOT NULL DEFAULT 0,
   PRIMARY KEY (`MemberID`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC;
 
@@ -162,9 +162,9 @@ CREATE TABLE `OrderStatus` (
 -- Records of OrderStatus
 -- ----------------------------
 BEGIN;
-INSERT INTO `OrderStatus` VALUES (1, '交易完成');
-INSERT INTO `OrderStatus` VALUES (2, '交易取消');
-INSERT INTO `OrderStatus` VALUES (3, '確認中');
+INSERT INTO `OrderStatus` VALUES (1, '訂單完成');
+INSERT INTO `OrderStatus` VALUES (2, '訂單取消');
+INSERT INTO `OrderStatus` VALUES (3, '訂單成立');
 COMMIT;
 
 -- ----------------------------

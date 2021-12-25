@@ -1,24 +1,28 @@
 import query from '../database/basic.database.js';
-
+import error from '../helper/error.js';
+import date from "date-and-time"
 /** Search the orders by memberID*/
 /**
  * @param  {object} user
- * @param  {string} user.id
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
+ * @param  {string} page
  */
- const searchOrderByID = (user, page) => {
+ const getOrdersByID = (user, page) => {
     return new Promise((resolve,reject) => {
-        if(page === undefined)
+        if(page === undefined || page === "")
             page = 1
-        let minLimit = (Number(page)-1)*20  
-        let count;
+        const dataPerPage = 20
+        const minLimit = (Number(page) - 1) * dataPerPage
         query('SELECT COUNT(*) as _count FROM `Order` WHERE MemberID = ? ',[user.id]).then((result)=>{
-            count = Number(result[0]._count);
-            let numOfPage = Math.ceil(count/20);
-            query('SELECT OrderID,Date,Total,StatusType FROM `Order` ,Payment,OrderStatus WHERE MemberID = ? and `Order`.OrderStatus = OrderStatus.OrderStatusID and `Order`.PaymentMethod = Payment.PaymentID  LIMIT ?,?', [user.id, minLimit, 20]).then((result) => {
+            const total = Number(result[0]._count);
+            const pages = Math.ceil(total / dataPerPage);
+            query('SELECT OrderID,Date,Total,StatusType FROM `Order` LEFT JOIN `OrderStatus` ON `Order`.`OrderStatus` = `OrderStatus`.`OrderStatusID` WHERE MemberID = ?  LIMIT ?,?', [user.id, minLimit, dataPerPage]).then((result) => {
                 resolve({ 
                     result,
-                    count,
-                    numOfPage,
+                    total,
+                    pages
                 }); 
             }).catch((error) => {reject(error);});
         }).catch((error) => {reject(error);});
@@ -32,44 +36,41 @@ import query from '../database/basic.database.js';
  * @param  {string} user.name
  * @param  {string} user.mail
  * @param  {object} values
- * @param  {number[]} values.price
- * @param  {number[]} values.quantity
- * @param  {string} values.date
- * @param  {number} values.orderStatus
- * @param  {number} values.paymentMethod
- * @param  {number[]} values.productID
- * @param  {string[]} values.productName
+ * @param  {object[]} values.products
+ * @param  {Number} values.products.productId
+ * @param  {Number} values.products.quantity
+ * @param  {Number} values.paymentMethod
  */
- const createOrder = async(user, values) => {
-    let total = 0;
-    let count = 0;
-    let totalPrice = await new Promise((resolve,reject) => {
-        values.productID.forEach((value, index) => {
-            query('SELECT Price FROM `Product` WHERE ProductID = ?', value).then(async(result) => {
-                total += Number(result[0].Price) * values.quantity[index];
-                count++;
-                if(count===(values.productID.length)){
-                    resolve(total);
-                }
-            }).catch((error) => {reject(error);});
-        });
-    })
-    console.log(totalPrice);
+ const createOrder = (user, values) => {
+    
+
     // let total = 0;
     // values.price.forEach((num, index) => {
     //     total += (values.price[index]) * (values.quantity[index]);
     // });
-    return new Promise((resolve,reject) => {
+    return new Promise(async (resolve,reject) => {
+        let totalPrice = 0;
+        for(let i = 0 ; i < values.products.length; i++){
+            await query('SELECT Price FROM `Product` WHERE ProductID = ? AND OnShelf = "Yes"', values.products[i].productId).then((result) => {
+                if(result.length > 0){
+                    totalPrice += result[0].Price * values.products[i].quantity         
+                }else{
+                    reject(error.APIError("建立訂單失敗", new Error()));
+                }
+            }).catch((error) => {reject(error);});
+        }
+    
+        const now = date.format(new Date(), "YYYY/MM/DD hh:mm:ss")
         query('INSERT INTO `Order` (`MemberID`,`Date`, `Total`, `OrderStatus`, `PaymentMethod`) VALUES (?, ?, ?, ?, ?)',
-            [user.id, values.date, totalPrice, 3,values.paymentMethod]).then((result) => {
+            [user.id, now, totalPrice, 3, values.paymentMethod]).then((result) => {
                 const orderId = result.insertId;
                 let sql = 'INSERT INTO `OrderDetail` (`OrderID`,`ProductID`, `Quantity`) values';
                 const parameterBracket = [];
                 const parameters = [];
-                values.productID.forEach((value, index) => {
+                values.products.forEach((element) => {
                     parameterBracket.push("(?,?,?)");
-                    parameters.push(orderId, value , values.quantity[index]);
-                    query('UPDATE  `Product` SET Sales = Sales + ?, Stock = Stock - ? WHERE ProductID = ?',[ (values.quantity[index]), (values.quantity[index]), value]);
+                    parameters.push(orderId, element.productId , element.quantity);
+                    query('UPDATE  `Product` SET Sales = Sales + ?, Stock = Stock - ? WHERE ProductID = ?',[ element.quantity, element.quantity, element.productId]);
                 })
                 query(sql+ parameterBracket.join(","),
                 parameters).then((result) => {
@@ -85,19 +86,24 @@ import query from '../database/basic.database.js';
 /** User delete the order */
 /**
  * @param  {object} user
- * @param  {string} user.id
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
+ * @param  {string} orderId
  */
-const deleteOrder = (user,id) =>{
+const deleteOrder = (user, orderId) =>{
     return new Promise((resolve,reject) => { 
-        query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? AND MemberID = ?', [id,user.id]).then((result) => {
-            resolve({ 
-                code: 200,
-                message: '取消成功', 
-            });
-            query('UPDATE Product,OrderDetail SET Product.Stock = Product.Stock + OrderDetail.Quantity WHERE Product.ProductID = OrderDetail.ProductID AND OrderID = ?',[id])
-            .then((result) =>{
-                console.log(result)
-            })  
+        query('UPDATE `Order` SET OrderStatus = 2 WHERE OrderID = ? AND MemberID = ?', [orderId, user.id]).then(() => {
+            query('UPDATE Product,OrderDetail \
+            SET Product.Stock = Product.Stock + OrderDetail.Quantity, \
+            Product.sales = Product.sales - OrderDetail.Quantity\
+            WHERE Product.ProductID = OrderDetail.ProductID AND OrderID = ?',[orderId])
+            .then(() =>{
+                resolve({ 
+                    code: 200,
+                    message: '取消成功', 
+                });
+            }).catch((error) => {reject(error);})
         }).catch((error) => {reject(error);})
     })    
 }
@@ -105,13 +111,16 @@ const deleteOrder = (user,id) =>{
 /** User check the order detail */
 /**
  * @param  {object} user
- * @param  {string} user.id
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
+ * @param  {string} orderId
  */
 // TODO: 需join orderStatus
-const checkOrderDetail = (user,id) =>{
+const getOrderDetail = (user, orderId) =>{
     return new Promise((resolve,reject) => { 
-        query('SELECT DISTINCT Product.ProductName,OrderDetail.Quantity FROM OrderDetail ,Product,`Order` WHERE OrderDetail.ProductID = Product.ProductID  and Order.MemberID=? AND OrderDetail.OrderID =? ', 
-        [user.id,id]).then((result) => {
+        query('SELECT Product.ProductName,o.Quantity FROM (SELECT ProductID,Quantity FROM `Order` LEFT JOIN OrderDetail ON `Order`.OrderID = OrderDetail.OrderID WHERE MemberID = ? AND `Order`.OrderID = ?) AS o LEFT JOIN Product ON o.ProductID = Product.ProductID', 
+        [user.id, orderId]).then((result) => {
             resolve(result);
         }).catch((error) => {reject(error);})
     })    
@@ -119,8 +128,8 @@ const checkOrderDetail = (user,id) =>{
 
 export default 
 {
-    searchOrderByID,
+    getOrdersByID,
     createOrder,
     deleteOrder,
-    checkOrderDetail
+    getOrderDetail
 }
