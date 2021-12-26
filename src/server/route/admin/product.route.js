@@ -6,7 +6,9 @@ const router = express.Router();
 router.get("/status", productController.getAllProductStatus)
 
 //上架商品
-router.post('/', productController.addProduct); 
+router
+    .get("/" , productController.getAllProduct)
+    .post('/', productController.addProduct)
 
 //下架商品
 router.delete("/:productId",productController.deleteProduct);

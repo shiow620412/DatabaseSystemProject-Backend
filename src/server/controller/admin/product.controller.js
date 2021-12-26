@@ -26,10 +26,18 @@ const getAllProductStatus = (req, res, next) => {
   });
 };
 
+const getAllProduct = (req, res, next) => {
+  productModule.getAllProduct(req.query["page"]).then((result) => {
+    res.send(result);
+  }).catch((error) => { 
+    next(error) 
+  });
+};
 export default
 {
     addProduct,
     deleteProduct,
     modifyProduct,
-    getAllProductStatus
+    getAllProductStatus,
+    getAllProduct
 }
