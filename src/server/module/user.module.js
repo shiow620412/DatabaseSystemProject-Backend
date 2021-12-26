@@ -205,12 +205,12 @@ const modifyInformation = (user,value) =>{
                 reject(error.APIError("舊密碼錯誤", new Error()));
             } else {               
                  query('UPDATE `Member` SET Password = ? WHERE MemberID = ?',
-                    [value.newPassword,user.id]).then((result) => {
+                    [value.newPassword,user.id]).then(() => {
                         resolve({ 
                             code: 200,
                             message: '修改成功', 
                         });  
-                    });
+                    }).catch((error) => {reject(error)});
             }
         }).catch((error) => {reject(error);})
     });
