@@ -164,6 +164,21 @@ const deleteCreditCard =(user,value)=>{
         }).catch((error) => {reject(error);});
     }) 
 }
+/**
+ * @param  {object} user
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
+ */
+const getInformation = (user) => {
+    return new Promise((resolve, reject) => {
+        query("SELECT `Name`,Phone,Email,Address FROM Member WHERE MemberID = ?" , user.id).then((result) => {
+            resolve(result[0]);
+        }).catch((error) => {
+            reject(error);
+        })
+    });
+}
 
 /** User modify the information */
 /**
@@ -223,6 +238,7 @@ export default {
     addCreditCard,
     findCreditCard,
     deleteCreditCard,
+    getInformation,
     modifyInformation,
     modifyPassword
 };
