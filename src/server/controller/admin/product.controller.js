@@ -20,7 +20,7 @@ const modifyProduct = (req, res, next) => {
 
 const getAllProductStatus = (req, res, next) => {
   productModule.getAllProductStatus().then((result) => {
-    res.send({result});
+    res.send(result);
   }).catch((error) => { 
     next(error) 
   });
