@@ -59,7 +59,19 @@ import error from '../../helper/error.js';
     })     
 };
 
+const getAllOrderStatus = () => {
+    return new Promise((resolve,reject) => {
+        query("SELECT StatusType,COUNT(StatusType) AS 'Total'  FROM `Order` LEFT JOIN OrderStatus ON `Order`.OrderStatus = OrderStatus.OrderStatusID GROUP BY StatusType ")
+        .then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+}
+
 export default{
     getOrderList,
-    modifyOrder
+    modifyOrder,
+    getAllOrderStatus
 }

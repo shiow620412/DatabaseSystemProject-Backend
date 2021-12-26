@@ -12,7 +12,16 @@ const modifyOrder = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+const getAllOrderStatus = (req, res, next) => {
+  orderModule.getAllOrderStatus().then((result) => {
+    res.send(result); 
+  }).catch((error) => { 
+    next(error) 
+  }); 
+}
+
 export default{
   getOrders,
-  modifyOrder
+  modifyOrder,
+  getAllOrderStatus
 }
