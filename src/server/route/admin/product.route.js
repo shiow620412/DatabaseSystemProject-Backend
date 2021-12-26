@@ -3,7 +3,7 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/", productController.getAllProductStatus)
+router.get("/status", productController.getAllProductStatus)
 
 //上架商品
 router.post('/', productController.addProduct); 
