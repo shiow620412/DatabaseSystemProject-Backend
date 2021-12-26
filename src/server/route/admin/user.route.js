@@ -9,4 +9,5 @@ router.put('/:userId/operate', userController.modifyUser);
 
 router.get('/', userController.getUsers ); 
 
+router.get("/status", userController.getAllUserStatus);
 export default router;

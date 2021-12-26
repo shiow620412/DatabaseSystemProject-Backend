@@ -12,8 +12,15 @@ const modifyUser = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+const getAllUserStatus = (req, res, next) => {
+  userModule.getAllUserStatus().then((result) => {
+    res.send(result); 
+  }).catch((error) => { next(error) });
+};
+
 export default 
 {
   getUsers,
-  modifyUser
+  modifyUser,
+  getAllUserStatus
 }

@@ -52,7 +52,21 @@ const modifyUserStatus = (userId, operate) => {
     })    
 };
 
+const getAllUserStatus = () => {
+    return new Promise((resolve,reject) => {
+        query("SELECT isBan,COUNT(*) AS 'total' FROM Member GROUP BY isBan").then((result) => {
+            resolve({
+                unban: result[0].total,
+                ban: result[1].total,
+            })
+        }).catch((error) => {
+            reject(error);
+        })
+    });
+}
+
 export default {
     listUser,
-    modifyUserStatus
+    modifyUserStatus,
+    getAllUserStatus
 };
