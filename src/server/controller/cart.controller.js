@@ -1,5 +1,11 @@
 import cartModule from "../module/cart.module.js";
 
+const getCart = (req, res, next) => {
+  cartModule.getCart(req.user).then((result) => {
+    res.send(result);
+  }).catch((error) => {next(error);});
+}
+
 const putProduct = (req, res, next) => {
     // 放入購物車
     cartModule.putProduct(req.user, req.body).then((result) => {
@@ -25,5 +31,6 @@ export default
 {
     putProduct,
     removeProduct,
-    modifyProductQuantity
+    modifyProductQuantity,
+    getCart
 }
