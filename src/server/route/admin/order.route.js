@@ -5,7 +5,9 @@ const router = express.Router();
 //find all
 router.get('/',orderController.getOrders); 
 
+router.get('/status',orderController.getAllOrderStatus); 
+
 //modify orders cancel
-router.put('/:orderId',orderController.cancelOrder); 
+router.put('/:orderId/:status',orderController.modifyOrder); 
 
 export default router;

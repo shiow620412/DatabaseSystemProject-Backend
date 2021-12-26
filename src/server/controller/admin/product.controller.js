@@ -18,9 +18,18 @@ const modifyProduct = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+const getAllProductStatus = (req, res, next) => {
+  productModule.getAllProductStatus().then((result) => {
+    res.send({result});
+  }).catch((error) => { 
+    next(error) 
+  });
+};
+
 export default
 {
     addProduct,
     deleteProduct,
-    modifyProduct
+    modifyProduct,
+    getAllProductStatus
 }

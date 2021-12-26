@@ -2,8 +2,8 @@
 import JWT from "jsonwebtoken";
 import config from "../../config/config.js";
 import httpStatus from "http-status";
-import checkAdminByUserID from "../database/member.database.js";
-import checkStockByProductID from "../database/product.database.js";
+import memberDatabase from "../database/member.database.js";
+import productDatabase from "../database/product.database.js";
 import error from "./error.js";
 
 function verifyToken(req, res, next){
@@ -65,7 +65,7 @@ function outputError(err, req, res, next){
 }
 
 function checkAdmin(req, res, next){
-    checkAdminByUserID(req.user.id).then((result)=>{
+    memberDatabase(req.user.id).then((result)=>{
         if(result === true){
             next();
         }else{
@@ -79,7 +79,7 @@ function checkAdmin(req, res, next){
 }
  
 function checkStock(req, res, next){
-    checkStockByProductID.checkStockByProductID(req.body).then((result)=>{
+    productDatabase.checkStockByProductID(req.body).then((result)=>{
         if(result === true){
             next();
         }else{

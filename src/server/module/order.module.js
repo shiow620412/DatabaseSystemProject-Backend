@@ -11,7 +11,7 @@ import date from "date-and-time"
  */
  const getOrdersByID = (user, page) => {
     return new Promise((resolve,reject) => {
-        if(page === undefined || filterOptions.page === "")
+        if(page === undefined || page === "")
             page = 1
         const dataPerPage = 20
         const minLimit = (Number(page) - 1) * dataPerPage

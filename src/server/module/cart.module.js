@@ -1,5 +1,21 @@
 import query from '../database/basic.database.js';
 import error from '../helper/error.js';
+/**
+ * @param  {object} user
+ * @param  {Number} user.id
+ * @param  {string} user.name
+ * @param  {string} user.mail
+ */
+const getCart = (user) => {
+    return new Promise((resolve,reject) => {
+        query("SELECT ProductID, ProductName, Thumbnail, Price, Stock FROM ShoppingCart NATURAL JOIN Product WHERE ShoppingCart.MemberID = ? ", user.id).then((result) => {
+            resolve(result);
+        }).catch((error) => {
+            reject(error);
+        })
+    });
+};
+
 /** User put the product to the shopping cart */
 /**
  * @param  {object} user
@@ -125,6 +141,7 @@ const modifyProductQuantity = (user, values) => {
 }
 
 export default {
+    getCart,
     putProduct,
     removeProduct,
     modifyProductQuantity

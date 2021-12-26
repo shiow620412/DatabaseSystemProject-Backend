@@ -59,9 +59,19 @@ const deleteProduct = (productId) => {
     });
 };
 
+const getAllProductStatus = () =>{
+    return new Promise((resolve,reject) => {
+        query("SELECT OnShelf,COUNT(OnShelf) AS 'total' FROM Product GROUP BY OnShelf").then((result) => {
+            resolve(result)
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+};
 export default
 {
     addProduct,
     deleteProduct,
-    modifyProduct
+    modifyProduct,
+    getAllProductStatus
 }

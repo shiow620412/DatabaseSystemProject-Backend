@@ -1,6 +1,3 @@
-import config from '../../../config/config.js';
-import jwt from 'jsonwebtoken';
-import error from '../../helper/error.js';
 import query from '../../database/basic.database.js';
 
 /*  User list   */
@@ -9,7 +6,7 @@ import query from '../../database/basic.database.js';
  */
  const listUser = (page) => {
     return new Promise((resolve,reject) => {
-        if(page === undefined || filterOptions.page === "")
+        if(page === undefined || page === "")
             page = 1
         const dataPerPage = 50;
         const minLimit=(Number(page) - 1) * dataPerPage  
@@ -29,21 +26,47 @@ import query from '../../database/basic.database.js';
 
 /**
  * @param  {string} userId
- * @param  {string} status
+ * @param  {object} operate
+ * @param  {boolean} operate.isBan
+ * @param  {boolean} operate.isAdmin
  */
-const modifyUserStatus = (userId, status) => {
+const modifyUserStatus = (userId, operate) => {
     return new Promise((resolve,reject) => { 
-        const UserStatus = status === "ban" ? 1 : 0;
-        query('UPDATE Member SET isBan = ? WHERE MemberID = ?', [UserStatus, userId]).then(() => {
+        const expectColumns = ["isAdmin", "isBan"];
+        const params = []
+        const operateColumns = []
+        expectColumns.forEach(column => {
+            if(operate[column] !== undefined){
+                operateColumns.push(`${column} = ?`);
+                params.push(operate[column] ? 1 : 0);
+            }
+        });
+        params.push(userId);
+        const sql = `UPDATE Member SET ${operateColumns.join(",")} WHERE MemberID = ?`  
+        query(sql, params).then(() => {
             resolve({ 
                 code: 200,
-                message: UserStatus ? "停權成功" : "復權成功"
+                message: "操作成功"
             });
         }).catch((error) => {reject(error);});
     })    
 };
 
+const getAllUserStatus = () => {
+    return new Promise((resolve,reject) => {
+        query("SELECT isBan,COUNT(*) AS 'total' FROM Member GROUP BY isBan").then((result) => {
+            resolve({
+                unban: result[0].total,
+                ban: result[1].total,
+            })
+        }).catch((error) => {
+            reject(error);
+        })
+    });
+}
+
 export default {
     listUser,
-    modifyUserStatus
+    modifyUserStatus,
+    getAllUserStatus
 };
