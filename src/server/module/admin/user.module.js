@@ -1,6 +1,3 @@
-import config from '../../../config/config.js';
-import jwt from 'jsonwebtoken';
-import error from '../../helper/error.js';
 import query from '../../database/basic.database.js';
 
 /*  User list   */
@@ -9,18 +6,18 @@ import query from '../../database/basic.database.js';
  */
  const listUser = (page) => {
     return new Promise((resolve,reject) => {
-        if(page===undefined)
-            page=1
-        let minLimit=(Number(page)-1)*50  
-        let count;
+        if(page === undefined || page === "")
+            page = 1
+        const dataPerPage = 50;
+        const minLimit=(Number(page) - 1) * dataPerPage  
         query('SELECT COUNT(*) as _count FROM Member ').then((result)=>{
-            count = Number(result[0]._count);
-            let numOfPage = Math.ceil(count/20);
-            query('SELECT * FROM Member  LIMIT ?,?', [minLimit,50]).then((result) => {
+            const total = Number(result[0]._count);
+            const pages = Math.ceil(total / dataPerPage);
+            query('SELECT MemberID,Account,Name,Email,isAdmin,isBan FROM Member  LIMIT ?,?', [minLimit,dataPerPage]).then((result) => {
                 resolve({ 
                     result,
-                    count,
-                    numOfPage,
+                    total,
+                    pages,
                 }); 
             }).catch((error) => {reject(error);});
         }).catch((error) => {reject(error);});
@@ -28,20 +25,48 @@ import query from '../../database/basic.database.js';
 };
 
 /**
- * @param  {string} page
+ * @param  {string} userId
+ * @param  {object} operate
+ * @param  {boolean} operate.isBan
+ * @param  {boolean} operate.isAdmin
  */
- const banUsers = (id) => {
+const modifyUserStatus = (userId, operate) => {
     return new Promise((resolve,reject) => { 
-        query('UPDATE Member SET isBan = 1  WHERE MemberID = ?', [id]).then((result) => {
+        const expectColumns = ["isAdmin", "isBan"];
+        const params = []
+        const operateColumns = []
+        expectColumns.forEach(column => {
+            if(operate[column] !== undefined){
+                operateColumns.push(`${column} = ?`);
+                params.push(operate[column] ? 1 : 0);
+            }
+        });
+        params.push(userId);
+        const sql = `UPDATE Member SET ${operateColumns.join(",")} WHERE MemberID = ?`  
+        query(sql, params).then(() => {
             resolve({ 
                 code: 200,
-                message: '停權成功', 
+                message: "操作成功"
             });
         }).catch((error) => {reject(error);});
     })    
 };
 
+const getAllUserStatus = () => {
+    return new Promise((resolve,reject) => {
+        query("SELECT isBan,COUNT(*) AS 'total' FROM Member GROUP BY isBan").then((result) => {
+            resolve({
+                unban: result[0].total,
+                ban: result[1].total,
+            })
+        }).catch((error) => {
+            reject(error);
+        })
+    });
+}
+
 export default {
     listUser,
-    banUsers
+    modifyUserStatus,
+    getAllUserStatus
 };

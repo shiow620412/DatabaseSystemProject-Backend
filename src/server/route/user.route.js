@@ -18,6 +18,8 @@ router.get('/findPassword', userController.findPassword );
 //改密碼
 router.put('/password', middleware.verifyToken, userController.modifyPassword );
 
+router.get("/information", middleware.verifyToken, userController.getInformation);
+
 //改個資
 router.put('/information', middleware.verifyToken, userController.modifyInformation );
 

@@ -10,7 +10,7 @@ const userLogin = (req, res, next) => {
   
 /* User  findPassword */
 const findPassword = (req, res, next) => {
-  userModule.findBackPassword(req.body).then((result) => {
+  userModule.findPassword(req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
@@ -43,6 +43,14 @@ const deleteCreditCard = (req, res, next) => {
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
+const getInformation = (req, res ,next) => {
+  userModule.getInformation(req.user).then((result) => {
+    res.send(result);
+  }).catch((error) => {
+    next(error);
+  })
+}
+
 /** modify User's information */
 const modifyInformation = (req, res, next) => {
   userModule.modifyInformation(req.user,req.body).then((result) => {
@@ -65,6 +73,7 @@ export default
   addCreditCard,
   findCreditCard,
   deleteCreditCard,
+  getInformation,
   modifyInformation,
   modifyPassword
 }

@@ -364,6 +364,11 @@ crypto-random-string@^2.0.0:
   resolved "https://registry.npmjs.org/crypto-random-string/-/crypto-random-string-2.0.0.tgz"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
 
+date-and-time@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/date-and-time/-/date-and-time-2.0.1.tgz#bc8b72704980e8a0979bb186118d30d02059ef04"
+  integrity sha512-O7Xe5dLaqvY/aF/MFWArsAM1J4j7w1CSZlPCX9uHgmb+6SbkPd8Q4YOvfvH/cZGvFlJFfHOZKxQtmMUOoZhc/w==
+
 debug@2.6.9, debug@~2.6.9:
   version "2.6.9"
   resolved "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
@@ -998,6 +1003,11 @@ mysql8@^2.17.3:
     readable-stream "2.3.6"
     safe-buffer "5.1.2"
     sqlstring "2.3.1"
+
+nanoid@^3.1.30:
+  version "3.1.30"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.30.tgz#63f93cc548d2a113dc5dfbc63bfa09e2b9b64362"
+  integrity sha512-zJpuPDwOv8D2zq2WRoMe1HsfZthVewpel9CAvTfc/2mBD1uUT/agc5f7GHGWXlYkFvi1mVxe4IjvP2HNrop7nQ==
 
 negotiator@0.6.2:
   version "0.6.2"

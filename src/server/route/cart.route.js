@@ -3,7 +3,7 @@ import cartController from "../controller/cart.controller.js";
 import middleware from "../helper/middleware.js";
 
 const router = express.Router();
-
+router.get("/", middleware.verifyToken, cartController.getCart);
 //delete
 router.delete("/", middleware.verifyToken, cartController.removeProduct); 
 

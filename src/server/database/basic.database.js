@@ -7,8 +7,28 @@ const connectionPool = mysql.createPool({
     host: config.mysqlHost,
     user: config.mysqlUserName,
     password: config.mysqlPass,
-    database: config.mysqlDatabase
+    database: config.mysqlDatabase,
+    port: config.mysqlPort
 });
+/**
+ * 
+ * @typedef {Object} MysqlResult
+ * @property {Number} fieldCount
+ * @property {Number} affectedRows
+ * @property {Number} insertId
+ * @property {Number} serverStatus
+ * @property {Number} warningCount
+ * @property {Number} changedRows
+ * @property {String} message
+ * @property {boolean} protocol41
+ */
+
+/**
+ * @param  {string} queryString
+ * @param  {Array|String} queryParameter
+
+ * @returns { Promise<MysqlResult|Array>}
+ */
 function query(queryString, queryParameter){
     return new Promise( (resolve, reject) => {
         connectionPool.getConnection((connectionError, connection) => { // 資料庫連線
