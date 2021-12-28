@@ -59,9 +59,47 @@ const deleteProduct = (productId) => {
     });
 };
 
+const getAllProductStatus = () =>{
+    return new Promise((resolve,reject) => {
+        query("SELECT OnShelf,COUNT(OnShelf) AS 'total' FROM Product GROUP BY OnShelf").then((result) => {
+            resolve(result)
+        }).catch((error) => {
+            reject(error);
+        });
+    });
+};
+/**
+ * @param  {string} page
+ */
+const getAllProduct = (page) =>{
+    return new Promise((resolve,reject) => {
+        if(page === undefined || page === "")
+            page = 1
+        const dataPerPage = 50;
+        const minLimit = (Number(page) - 1) * dataPerPage;
+        query("SELECT COUNT(*) AS COUNT FROM Product").then((result) => {
+            const total = Number(result[0].COUNT);
+            const pages = Math.ceil(total / dataPerPage);
+            query("SELECT ProductID,ProductName,Price,Thumbnail,Stock FROM Product limit ?,?", [minLimit, dataPerPage]).then((result) => {
+                resolve({
+                    result,
+                    total,
+                    pages
+                })
+            }).catch((error) => {
+                reject(error);
+            });
+        }).catch((error) => {
+            reject(error);
+        });
+        
+    });
+};
 export default
 {
     addProduct,
     deleteProduct,
-    modifyProduct
+    modifyProduct,
+    getAllProductStatus,
+    getAllProduct
 }
