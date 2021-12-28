@@ -20,16 +20,24 @@ const modifyProduct = (req, res, next) => {
 
 const getAllProductStatus = (req, res, next) => {
   productModule.getAllProductStatus().then((result) => {
-    res.send({result});
+    res.send(result);
   }).catch((error) => { 
     next(error) 
   });
 };
 
+const getAllProduct = (req, res, next) => {
+  productModule.getAllProduct(req.query["page"]).then((result) => {
+    res.send(result);
+  }).catch((error) => { 
+    next(error) 
+  });
+};
 export default
 {
     addProduct,
     deleteProduct,
     modifyProduct,
-    getAllProductStatus
+    getAllProductStatus,
+    getAllProduct
 }
