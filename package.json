@@ -2,12 +2,13 @@
   "name": "backend",
   "version": "0.0.0",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "mysql:start": "docker-compose up -d",
     "mysql:stop": "docker-compose down",
     "start": "nodemon ./src/app.js",
-    "test": "c8 --all -r html mocha ./src/test/*.test.js"
+    "test-controller": "c8 --all -r html mocha ./src/test/controller/*.test.js",
+    "test-module": "c8 --all -r html mocha ./src/test/module/*.test.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

@@ -11,8 +11,6 @@ router.post('/register', userController.userRegister);
 //會員登入
 router.post('/login', userController.userLogin ); 
 
-//TODO:
-//暫時不用
 router.get('/findPassword', userController.findPassword ); 
 
 //改密碼
