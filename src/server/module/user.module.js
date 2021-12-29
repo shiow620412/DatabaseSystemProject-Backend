@@ -2,7 +2,7 @@ import config from '../../config/config.js';
 import jwt from 'jsonwebtoken';
 import error from '../helper/error.js';
 import query from '../database/basic.database.js';
-
+import { nanoid } from 'nanoid';
 /*  User GET (Login)登入取得資訊  */
 /**
  * @param  {object} values
@@ -42,21 +42,46 @@ const Login = (values) => {
     })
 };
 
-/*  User findPassword   */
+/*  User resetPassword   */
 /**
  * @param  {object} value
  * @param  {string} value.email
+ * @param  {string} value.account
  */
-const findPassword = (value) => {
+const resetPassword = (value) => {
     return new Promise((resolve,reject) => {
-        query('SELECT Password FROM Member  WHERE Email = ?',value.email ).then((result) => {
-            if(result.length > 0 ){
-                resolve(result[0]); 
-            }else{
-                reject(error.APIError("查無此email", new Error()));
+        const newPassword = nanoid(16)
+        query("UPDATE Member SET Password = ? WHERE Email = ? AND Account = ?", [newPassword, value.email, value.account]).then((result) => {
+            if(result.affectedRows === 0 ){
+                reject(error.APIError("找不到此信箱或帳號", new Error()))
             }
-        }).catch((error) => {reject(error);})
+            const mailOptions = {
+                from: config.mailUser,
+                to: value.email,
+                subject: '密碼重置請求',
+                text: '您好！\r\n這是您的新密碼:'+ newPassword
+            };
+            config.mailService.sendMail(mailOptions, (error, info) => {
+                if(error){
+                    reject(error);
+                }
+                resolve({
+                    code: 200,
+                    message: `已將新的密碼送至 ${value.email}`
+                })
+            });
+        }).catch((error) => {
+            reject(error)
+        })
+        // query('SELECT Password FROM Member  WHERE Email = ?',value.email ).then((result) => {
+        //     if(result.length > 0 ){
+        //         resolve(result[0]); 
+        //     }else{
+        //         reject(error.APIError("查無此email", new Error()));
+        //     }
+        // }).catch((error) => {reject(error);})
     })
+
 };
 
 /** User Register */
@@ -233,7 +258,7 @@ const modifyInformation = (user,value) =>{
 
 export default {
     Login,
-    findPassword ,
+    resetPassword ,
     Register,
     addCreditCard,
     findCreditCard,

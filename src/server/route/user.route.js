@@ -13,7 +13,7 @@ router.post('/login', userController.userLogin );
 
 //TODO:
 //暫時不用
-router.get('/findPassword', userController.findPassword ); 
+router.post('/resetPassword', userController.resetPassword ); 
 
 //改密碼
 router.put('/password', middleware.verifyToken, userController.modifyPassword );
