@@ -9,8 +9,8 @@ const userLogin = (req, res, next) => {
 };
   
 /* User  findPassword */
-const findPassword = (req, res, next) => {
-  userModule.findPassword(req.body).then((result) => {
+const resetPassword = (req, res, next) => {
+  userModule.resetPassword(req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
@@ -68,7 +68,7 @@ const modifyPassword = (req, res, next) => {
 export default 
 {
   userLogin,
-  findPassword,
+  resetPassword,
   userRegister,
   addCreditCard,
   findCreditCard,
