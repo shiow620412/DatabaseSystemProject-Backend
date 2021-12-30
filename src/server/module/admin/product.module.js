@@ -80,7 +80,7 @@ const getAllProduct = (page) =>{
         query("SELECT COUNT(*) AS COUNT FROM Product").then((result) => {
             const total = Number(result[0].COUNT);
             const pages = Math.ceil(total / dataPerPage);
-            query("SELECT ProductID,ProductName,Price,Thumbnail,Stock FROM Product limit ?,?", [minLimit, dataPerPage]).then((result) => {
+            query("SELECT ProductID,ProductName,Price,Thumbnail,Stock,OnShelf FROM Product limit ?,?", [minLimit, dataPerPage]).then((result) => {
                 resolve({
                     result,
                     total,
