@@ -11,7 +11,7 @@ import query from '../database/basic.database.js';
  */
 const Login = (values) => {
     return new Promise((resolve,reject) => {
-        query("SELECT * FROM Member WHERE Account = ?", values.account).then((result) => {
+        query.query("SELECT * FROM Member WHERE Account = ?", values.account).then((result) => {
             if(result.length > 0) {
                     const queryPassword = result[0].Password; 
                     const userPassword = values.password; 

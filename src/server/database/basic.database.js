@@ -53,4 +53,7 @@ function query(queryString, queryParameter){
     })
 }
 
-export default query;
+async function getPool(options = {}) {
+    return await mysql.createPool(optionsClone);
+  }
+export default {query, getPool};
