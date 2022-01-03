@@ -8,7 +8,7 @@ import error from '../helper/error.js';
  */
 const getCart = (user) => {
     return new Promise((resolve,reject) => {
-        query("SELECT ProductID, ProductName, Thumbnail, Price, Stock FROM ShoppingCart NATURAL JOIN Product WHERE ShoppingCart.MemberID = ? ", user.id).then((result) => {
+        query("SELECT ProductID, ProductName, Thumbnail, Price, Stock, Quantity FROM ShoppingCart NATURAL JOIN Product WHERE ShoppingCart.MemberID = ? ", user.id).then((result) => {
             resolve(result);
         }).catch((error) => {
             reject(error);
