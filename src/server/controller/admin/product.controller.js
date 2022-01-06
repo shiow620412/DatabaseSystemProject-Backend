@@ -6,14 +6,14 @@ const addProduct = (req, res, next) => {
     }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
-const deleteProduct = (req, res, next) => {
-  productModule.deleteProduct(req.params.productId).then((result) => {
+const operateProduct = (req, res, next) => {
+  productModule.operateProduct(req.params.productId, req.body.onShelf).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
 
-const modifyProduct = (req, res, next) => {
-  productModule.modifyProduct(req.params.productId, req.body).then((result) => {
+const modifyProductData = (req, res, next) => {
+  productModule.modifyProductData(req.params.productId, req.body).then((result) => {
     res.send(result); // 成功回傳result結果
   }).catch((error) => { next(error) }); // 失敗回傳錯誤訊息
 };
@@ -36,8 +36,8 @@ const getAllProduct = (req, res, next) => {
 export default
 {
     addProduct,
-    deleteProduct,
-    modifyProduct,
+    operateProduct,
+    modifyProductData,
     getAllProductStatus,
     getAllProduct
 }
