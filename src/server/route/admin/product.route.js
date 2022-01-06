@@ -10,10 +10,10 @@ router
     .get("/" , productController.getAllProduct)
     .post('/', productController.addProduct)
 
-//下架商品
-router.delete("/:productId",productController.deleteProduct);
+//操作商品上下架
+router.put("/:productId/operate",productController.operateProduct);
 
 //更新商品
-router.put("/:productId",productController.modifyProduct);
+router.put("/:productId",productController.modifyProductData);
 
 export default router;
