@@ -15,21 +15,23 @@ router.post('/login', userController.userLogin );
 //暫時不用
 router.post('/resetPassword', userController.resetPassword ); 
 
+router.use(middleware.verifyToken);
+router.use(middleware.checkIsBan);
 //改密碼
-router.put('/password', middleware.verifyToken, userController.modifyPassword );
+router.put('/password', userController.modifyPassword );
 
-router.get("/information", middleware.verifyToken, userController.getInformation);
+router.get("/information", userController.getInformation);
 
 //改個資
-router.put('/information', middleware.verifyToken, userController.modifyInformation );
+router.put('/information', userController.modifyInformation );
 
 //新增信用卡
-router.post('/creditCard', middleware.verifyToken, userController.addCreditCard );
+router.post('/creditCard', userController.addCreditCard );
 
 //查詢信用卡
-router.get('/creditCard', middleware.verifyToken, userController.findCreditCard );
+router.get('/creditCard', userController.findCreditCard );
 
 //刪除信用卡
-router.delete('/creditCard',middleware.verifyToken,userController.deleteCreditCard );
+router.delete('/creditCard', userController.deleteCreditCard );
 
 export default router;
