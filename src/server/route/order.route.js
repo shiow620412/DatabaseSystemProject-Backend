@@ -5,15 +5,15 @@ import middleware from "../helper/middleware.js";
 const router = express.Router();
 
 // find by user id 
-router.get("/",middleware.verifyToken,orderController.getOrders);
+router.get("/", orderController.getOrders);
 
 // 建立訂單
-router.post('/', middleware.verifyToken, middleware.checkStock, orderController.createOrder);
+router.post('/', middleware.checkStock, orderController.createOrder);
 
 // 取消訂單
-router.delete("/:orderId",middleware.verifyToken,orderController.deleteOrder);
+router.delete("/:orderId", orderController.deleteOrder);
 
 // 查詢訂單詳細資料
-router.get("/:orderId/detail",middleware.verifyToken,orderController.getOrderDetail);
+router.get("/:orderId/detail", orderController.getOrderDetail);
 
 export default router;

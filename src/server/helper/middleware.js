@@ -65,19 +65,36 @@ function outputError(err, req, res, next){
 }
 
 function checkAdmin(req, res, next){
-    memberDatabase(req.user.id).then((result)=>{
+    memberDatabase.checkAdminByUserID(req.user.id).then((result)=>{
         if(result === true){
             next();
         }else{
-            res.status(400).send({
-                code:400,
-                message:httpStatus[400]
+            const statusCode = 400
+            res.status(statusCode).send({
+                code:statusCode,
+                message:httpStatus[statusCode]
             })
         }
     }).catch((_error) => {next(error.MySQLError(_error))});
     
 }
  
+function checkIsBan(req, res, next){
+    memberDatabase.checkBanByUserID(req.user.id).then((result) => {
+        if(result === true){
+            const statusCode = 403
+            res.status(statusCode).send({
+                code:statusCode,
+                message:httpStatus[statusCode]
+            })
+        }else{
+            next();
+        }
+    }).catch((_error) => {
+        next(error.MySQLError(_error));
+    })
+}
+
 function checkStock(req, res, next){
     productDatabase.checkStockByProductID(req.body).then((result)=>{
         if(result === true){
@@ -95,5 +112,6 @@ export default {
     verifyToken,
     outputError,
     checkAdmin,
-    checkStock
+    checkStock,
+    checkIsBan
 };
