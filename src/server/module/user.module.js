@@ -197,7 +197,9 @@ const deleteCreditCard =(user,value)=>{
  */
 const getInformation = (user) => {
     return new Promise((resolve, reject) => {
-        query("SELECT `Name`,Phone,Email,Address FROM Member WHERE MemberID = ?" , user.id).then((result) => {
+        query("SELECT `Name`,Phone,Email,Address,isAdmin FROM Member WHERE MemberID = ?" , user.id).then((result) => {
+            const response = result[0];
+            response.isAdmin = response.isAdmin ? true : false;
             resolve(result[0]);
         }).catch((error) => {
             reject(error);
