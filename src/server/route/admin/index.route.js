@@ -7,7 +7,6 @@ import img from "./img.route.js"
 import middleware from "../../helper/middleware.js";
 const router = express.Router();
 
-router.use(middleware.verifyToken)
 router.use(middleware.checkAdmin)
 
 router.use("/orders",order);

@@ -119,7 +119,7 @@ const deleteOrder = (user, orderId) =>{
 // TODO: 需join orderStatus
 const getOrderDetail = (user, orderId) =>{
     return new Promise((resolve,reject) => { 
-        query('SELECT Product.ProductName,o.Quantity FROM (SELECT ProductID,Quantity FROM `Order` LEFT JOIN OrderDetail ON `Order`.OrderID = OrderDetail.OrderID WHERE MemberID = ? AND `Order`.OrderID = ?) AS o LEFT JOIN Product ON o.ProductID = Product.ProductID', 
+        query('SELECT Product.ProductName, o.Quantity, Product.Price FROM (SELECT ProductID,Quantity FROM `Order` LEFT JOIN OrderDetail ON `Order`.OrderID = OrderDetail.OrderID WHERE MemberID = ? AND `Order`.OrderID = ?) AS o LEFT JOIN Product ON o.ProductID = Product.ProductID', 
         [user.id, orderId]).then((result) => {
             resolve(result);
         }).catch((error) => {reject(error);})

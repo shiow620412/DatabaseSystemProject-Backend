@@ -1,4 +1,5 @@
 import query from '../../database/basic.database.js';
+import error from '../../helper/error.js';
 
 /** Admin hit the product on the shelf */
 /**
@@ -24,16 +25,19 @@ import query from '../../database/basic.database.js';
 
 /**
  * @param  {string} productId
+ * @param  {boolean} onShelf
  */
-const deleteProduct = (productId) => {
+const operateProduct = (productId, onShelf) => {
     return new Promise((resolve,reject) => {
-        const shelfStatus = "No";
+        if(onShelf === undefined)
+            reject(error.APIError("商品操作失敗", new Error()));
+        const shelfStatus = onShelf ? "Yes" : "No";
 
         query('UPDATE  `Product` SET OnShelf = ? WHERE ProductID = ?',
         [shelfStatus,productId]).then(() => {
             resolve({
                 code: 200,
-                message: "商品下架成功",
+                message: onShelf ? "商品重新上架成功" : "商品下架成功",
             })
         }).catch((error) => {reject(error);})             
     });
@@ -47,7 +51,7 @@ const deleteProduct = (productId) => {
  * @param  {string} values.description
  * @param  {Number} values.stock
  */
- const modifyProduct = (id, values) => {
+ const modifyProductData = (id, values) => {
     return new Promise((resolve,reject) => {
         query('UPDATE  `Product` SET Price = ?, Thumbnail = ?, Description = ?, Stock = ? WHERE ProductID = ?',
         [values.price, values.thumbnail, values.description, values.stock, id]).then(() => {
@@ -80,7 +84,7 @@ const getAllProduct = (page) =>{
         query("SELECT COUNT(*) AS COUNT FROM Product").then((result) => {
             const total = Number(result[0].COUNT);
             const pages = Math.ceil(total / dataPerPage);
-            query("SELECT ProductID,ProductName,Price,Thumbnail,Stock FROM Product limit ?,?", [minLimit, dataPerPage]).then((result) => {
+            query("SELECT ProductID,ProductName,Price,Thumbnail,Stock,OnShelf FROM Product limit ?,?", [minLimit, dataPerPage]).then((result) => {
                 resolve({
                     result,
                     total,
@@ -98,8 +102,8 @@ const getAllProduct = (page) =>{
 export default
 {
     addProduct,
-    deleteProduct,
-    modifyProduct,
+    operateProduct,
+    modifyProductData,
     getAllProductStatus,
     getAllProduct
 }
