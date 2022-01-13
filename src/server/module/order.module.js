@@ -70,7 +70,10 @@ import date from "date-and-time"
                 values.products.forEach((element) => {
                     parameterBracket.push("(?,?,?)");
                     parameters.push(orderId, element.productId , element.quantity);
-                    query('UPDATE  `Product` SET Sales = Sales + ?, Stock = Stock - ? WHERE ProductID = ?',[ element.quantity, element.quantity, element.productId]);
+                    query('UPDATE  `Product` SET Sales = Sales + ?, Stock = Stock - ? WHERE ProductID = ?',[ element.quantity, element.quantity, element.productId])
+                    .catch((error) => {
+                        reject(error);
+                    });
                 })
                 query(sql+ parameterBracket.join(","),
                 parameters).then((result) => {
@@ -78,7 +81,9 @@ import date from "date-and-time"
                         code: 200,
                         message: "購買成功",
                     });
-                });  
+                }) .catch((error) => {
+                    reject(error);
+                });
         }).catch((error) => {reject(error);});
     });
 };
