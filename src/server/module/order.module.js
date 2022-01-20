@@ -81,7 +81,7 @@ import date from "date-and-time"
                         code: 200,
                         message: "購買成功",
                     });
-                }) .catch((error) => {
+                }).catch((error) => {
                     reject(error);
                 });
         }).catch((error) => {reject(error);});
