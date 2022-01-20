@@ -48,7 +48,7 @@ import error from '../../helper/error.js';
                             code: 200,
                             message: '訂單取消成功', 
                         });
-                    })  
+                    }).catch((error) =>{reject(error);});  
                 }else{
                     reject(error.APIError("訂單取消失敗", new Error()));
                 }

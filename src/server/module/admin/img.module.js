@@ -12,7 +12,7 @@ const uploadImage = (file, host) => {
             resolve({
                 code: 200,
                 message: "上傳成功",
-                imageUrl: `http://${host}/img/${filename}`
+                imageUrl: `/img/${filename}`
             });
         }).catch((error) => {
             reject(error);

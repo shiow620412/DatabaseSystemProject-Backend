@@ -132,7 +132,7 @@ const modifyProductQuantity = (user, values) => {
                     }
                   
                 }
-            })
+            }).catch((error) =>{reject(error);});
            
         }).catch((error) => {
             reject(error);
