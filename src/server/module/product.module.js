@@ -120,7 +120,7 @@ const getProductsBySales = (page, sort, maxPrice, minPrice) => {
 const countProductByCategory = (productName) => {
     return new Promise((resolve,reject) => {
         console.log(productName)
-        query(`SELECT TypeName,count(*) as quantity FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName LIKE ? GROUP BY TypeName`,
+        query(`SELECT TypeName,count(*) as quantity FROM Product LEFT JOIN Type on Type = TypeID WHERE ProductName LIKE ? AND OnShelf = 'Yes' GROUP BY TypeName`,
         [`%${productName}%`]).then((result) => {
             resolve(result)
         }).catch((error) => {reject(error);})             
